@@ -7,7 +7,7 @@
 - [x] eslint + prettier 
 - [x] redux
 - [x] redux-toolkit
-- [ ] scss
+- [x] scss
 
 
 
