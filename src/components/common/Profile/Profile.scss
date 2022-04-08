@@ -1,0 +1,18 @@
+.Profile{
+  display: inline-flex;
+  align-items: center;
+
+  border-radius: 100%;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  overflow: hidden;
+  & > img {
+    width: 32px;
+    height: 32px;
+    border-radius: 100%;
+  }
+  &:hover{
+    background-color: rgba(0,0,0,0.05);
+  }
+}

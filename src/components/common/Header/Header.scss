@@ -1,0 +1,74 @@
+@import "/src/styles/mixin";
+header{
+  background:#fff;
+  height: 64px;
+  display: flex;
+  overflow: hidden;
+  & > .leftbox {
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    gap: 8px;
+    min-width: 238px;
+    box-sizing: border-box;
+    @include mobile {
+      display: none;
+}
+
+  }
+  & > .centerbox {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex: 1 1 100%;
+    & > .datebox {
+      display: flex;
+      align-items: center;
+      padding-left: 16px;
+      .title{
+        display: inline-block;
+        font-family: 'Product Sans',Arial,sans-serif;
+        font-size: 22px;
+        line-height: 24px;
+        padding-left: 16px;
+        position: relative;
+        vertical-align: middle;
+        color: #3c4043;
+        margin-top: 1px;
+        word-break: keep-all;
+        white-space: nowrap;
+        
+      }
+    }
+    & > .toolbox {
+      display: flex;
+      align-items: center;
+    }
+  }
+  & > .rightbox {
+    display: flex;
+    align-items: center;
+    flex: 0 0 auto;
+    padding: 0 14px;
+    gap: 8px;
+  }
+}
+.logo-wrapper{
+  display: inline-flex;
+  align-items: center;
+  .logo {
+    width: 40px;
+    height: 40px;
+  }
+  .title{
+    display: inline-block;
+    font-family: 'Product Sans',Arial,sans-serif;
+    font-size: 22px;
+    line-height: 24px;
+    padding-left: 8px;
+    position: relative;
+    vertical-align: middle;
+    color: #5f6368;
+    margin-top: 1px;
+  }
+}

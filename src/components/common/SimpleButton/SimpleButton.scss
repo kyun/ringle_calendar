@@ -1,0 +1,25 @@
+
+
+.SimpleButton{
+  height: 36px;
+  background: grey;
+  border: none;
+  padding: 0 24px;
+  border-radius: 4px;
+  font-family: "Google Sans",Roboto,Arial,sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .25px;
+  cursor: pointer;
+  word-break: keep-all;
+  &.--primary {
+    background-color: #1a73e8;
+    color: #fff;
+  }
+  &.--border {
+    background-color: #fff;
+    border: 1px solid #dadce0;
+    color: #3c4043;
+  
+  }
+}
