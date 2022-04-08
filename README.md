@@ -10,6 +10,10 @@
 - [x] scss
 
 
+#### 3rd party lib
+- [x] dayjs
+
+
 
 #### eslint, prettier
 
