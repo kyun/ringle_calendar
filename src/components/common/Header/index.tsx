@@ -12,8 +12,10 @@ import {
   MdOutlineSettings,
 } from 'react-icons/md';
 import SimpleButton from '../SimpleButton';
+import SwitchButton from '../SwitchButton';
 
 const Header: React.FC<any> = () => {
+  const [isWeek, setIsWeek] = React.useState(true);
   return (
     <header>
       <div className="leftbox">
@@ -51,18 +53,11 @@ const Header: React.FC<any> = () => {
           <IconButton size={40} color="#4b4b4b">
             <MdOutlineSettings />
           </IconButton>
-          <SimpleButton
-            theme="border"
-            style={{ padding: '0 12px', marginLeft: 16 }}
-          >
-            주
-          </SimpleButton>
-          <SimpleButton
-            theme="border"
-            style={{ padding: '0 12px', marginLeft: 0 }}
-          >
-            월
-          </SimpleButton>
+          <SwitchButton
+            value={isWeek}
+            onChange={setIsWeek}
+            style={{ marginLeft: 16 }}
+          />
         </div>
       </div>
       <div className="rightbox">
