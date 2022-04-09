@@ -2,6 +2,7 @@ import dayjs, { Dayjs } from 'dayjs';
 import React from 'react';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import { selectCalendar } from '../../../features/calendar/calendarSlice';
+import { getSchedule } from '../../../features/schedule/scheduleSlice';
 import './WeeklyScheduler.scss';
 
 const DAY = ['일', '월', '화', '수', '목', '금', '토'];
@@ -21,13 +22,19 @@ const HOUR = Array(24)
       return `오전 ${i}시`;
     }
   });
+
+const HEAD = 164;
 const WeeklyScheduler: React.FC<any> = () => {
+  const schedule = useAppSelector(getSchedule);
+  const bodyRef = React.useRef<HTMLDivElement>(null);
+  const privateTodoRef = React.useRef<HTMLDivElement[]>([]);
   const calendar = useAppSelector(selectCalendar);
   const dispatch = useAppDispatch();
   const today = React.useMemo(() => dayjs(Date.now()), []);
   const [thisWeek, setThisWeek] = React.useState<Dayjs[]>([]);
   const [nowPosition, setNowPosition] = React.useState('0%');
   let pos = {
+    index: -1,
     isActive: false,
     startY: 0,
     endY: 0,
@@ -49,20 +56,48 @@ const WeeklyScheduler: React.FC<any> = () => {
     setThisWeek(tw);
   }, [calendar.selected]);
 
-  const handleMouseDown = (e: any) => {
-    console.log(e);
+  const handleMouseDown = (index: number) => (e: any) => {
+    if (!bodyRef.current) return;
+
     pos.isActive = true;
-    pos.startY = e.clientY;
+    pos.index = index;
+    const y = e.clientY - HEAD + bodyRef.current.scrollTop;
+    pos.startY = Math.trunc(y / 24) * 24;
+    privateTodoRef.current[index].style.top = `${pos.startY}px`;
+    privateTodoRef.current[index].style.height = `${24}px`;
   };
-  const handleMouseMove = (e: any) => {
+  const handleMouseMove = (index: number) => (e: any) => {
+    if (!bodyRef.current) return;
     if (!pos.isActive) return;
-    pos.endY = e.clientY;
+    const y = e.clientY - HEAD + bodyRef.current.scrollTop;
+    pos.endY = Math.floor(y / 24) * 24;
+    const height = pos.endY - pos.startY;
+    const _h = Math.ceil(height / 24) * 24;
+    if (_h < 0) {
+      privateTodoRef.current[index].style.height = `${Math.abs(_h)}px`;
+      privateTodoRef.current[index].style.top = `${pos.endY}px`;
+      return;
+    }
+    privateTodoRef.current[index].style.height = `${_h + 24}px`;
   };
-  const handleMouseUp = (e: any) => {
+  const handleMouseUp = (index: number) => (e: any) => {
     pos.isActive = false;
-    pos.endY = e.clientY;
-    console.log(`e`, e.nativeEvent, e.clientY);
-    console.log(pos);
+    pos.index = -1;
+    pos.endY = 0;
+    console.log(
+      pos.startY,
+      pos.endY,
+      privateTodoRef.current[index].clientHeight
+    );
+    if (!bodyRef.current) return;
+    privateTodoRef.current[index].style.top = `${0}px`;
+    privateTodoRef.current[index].style.height = `${0}px`;
+  };
+  const handleMouseLeave = (index: number) => (e: any) => {
+    //
+    pos.isActive = false;
+    // privateTodoRef.current[index].style.top = `${0}px`;
+    // privateTodoRef.current[index].style.height = `${0}px`;
   };
   return (
     <div className="WeeklyScheduler">
@@ -84,7 +119,7 @@ const WeeklyScheduler: React.FC<any> = () => {
           })}
         </div>
       </div>
-      <div className="body">
+      <div className="body" ref={bodyRef}>
         <div className="time-indicator">
           {HOUR.map((text, i) => {
             return (
@@ -95,14 +130,30 @@ const WeeklyScheduler: React.FC<any> = () => {
           })}
         </div>
         {thisWeek.map((d, i) => {
+          console.log(d.format('YYYY-MM-DD'));
           return (
             <div
               className="box"
               key={i}
-              onMouseDown={handleMouseDown}
-              onMouseMove={handleMouseMove}
-              onMouseUp={handleMouseUp}
+              onMouseDown={handleMouseDown(i)}
+              onMouseMove={handleMouseMove(i)}
+              onMouseUp={handleMouseUp(i)}
+              onMouseLeave={handleMouseLeave(i)}
+              // onMouseOut={handleMouseUp(i)}
             >
+              <div
+                ref={(el) => {
+                  privateTodoRef.current[i] = el as HTMLDivElement;
+                }}
+                className="todobox"
+              />
+              {schedule.schedule[d.format('YYYY-MM-DD')]?.map((el, i) => {
+                return (
+                  <div className="todobox" key={i}>
+                    1
+                  </div>
+                );
+              })}
               {d.format('YYYYMMDD') === today.format('YYYYMMDD') && (
                 <span className="now-indicator" style={{ top: nowPosition }} />
               )}
