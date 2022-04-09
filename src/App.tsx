@@ -5,6 +5,7 @@ import './App.scss';
 import Calendar from './features/calendar/Calendar';
 import Header from './components/common/Header';
 import MiniCalendar from './components/calendar/MiniCalendar';
+import WeeklyScheduler from './components/calendar/WeeklyScheduler';
 
 function App() {
   return (
@@ -14,7 +15,9 @@ function App() {
         <div className="left-section">
           <MiniCalendar />
         </div>
-        <div className="center-section"></div>
+        <div className="center-section">
+          <WeeklyScheduler />
+        </div>
         <div className="right-section"></div>
       </div>
     </div>

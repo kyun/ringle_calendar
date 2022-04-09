@@ -1,0 +1,129 @@
+
+.WeeklyScheduler{
+  position:relative;
+  // background: red;
+  width: 100%;
+  height: 100%;
+  max-height: calc(100vh - 64px);
+
+  .head{
+    //
+    width: 100%;
+    background-color: white;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 16px;
+    .row{
+      display: flex;
+      box-sizing: border-box;
+      padding-right: 16px;
+      .fixed-box{
+      flex: 0 0 56px;
+        background-color: rgba(255,0,0,0.4);
+      }
+      .box{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: calc(100% / 7);
+
+        .day-name{
+          color: #70757a;
+          font-size: 11px;
+          font-weight: 500;
+          letter-spacing: 0.8px;
+          line-height: 32px;
+          margin-top: 6px;
+        }
+        .date {
+          cursor: pointer;
+          text-align: center;
+          color: #70757a;
+          font-size: 26px;
+          letter-spacing: -2.6px;
+          line-height: 46px;
+          width: 46px;
+          height: 46px;
+          border-radius: 100%;
+          &:hover{
+            background-color: #f0f0f0;
+          }
+        }
+        &.--today{
+          .day-name{
+            color: #1a73e8;
+          }
+          .date{
+            background-color: #1a73e8;
+            color: white;
+          }
+        }
+      }
+    }
+  }
+
+  .body{
+    display: flex;
+    height: calc(100vh - 64px - 100px);
+    width: 100%;
+    overflow-y: scroll;
+    .time-indicator{
+      flex: 0 0 56px;
+      .hour-box{
+        border-left: none;
+      }
+      .time-name{
+        text-align: center;
+        position: absolute;
+        padding: 0 8px;
+        background: white;
+        left: 0;
+        bottom: -8px;
+        color: #70757a;
+        font-size: 10px;
+        white-space: nowrap;
+        word-break: keep-all;
+      }
+    }
+    .box{
+      // display: flex;
+      // flex-direction: column;
+      // align-items: center;
+      // justify-content: center;
+      position: relative;
+      height: fit-content;
+      width: calc(100% / 7);
+      .now-indicator{
+        background-color: red;
+        width: 100%;
+        height: 2px;
+        position: absolute;
+        left: 0;
+        &::before{
+          position: absolute;
+          z-index: 2;
+          left: -6px;
+          top: 0;
+          bottom: 0;
+          margin: auto;
+          content: '';
+          width: 12px;
+          height: 12px;
+          border-radius: 100%;
+          display: inline-block;
+          background-color: red;
+        }
+      }
+    }
+
+    .hour-box{
+        position: relative;
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+        height: 48px;
+        border-left: 1px solid #eee;
+        border-bottom: 1px solid #eee;
+      }
+  }
+}
