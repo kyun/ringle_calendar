@@ -1,0 +1,19 @@
+
+.Input{
+  width: 100%;
+  color: #3c4043;
+  font-family: Google Sans,Roboto,Arial,sans-serif;
+  font-size: 22px;
+  // height: 28px;
+  position: relative;
+  background-color: transparent;
+  border: none;
+  border-bottom: 1px solid #f0f0f0;
+  padding-bottom: 8px;
+  padding-left: 8px;
+  box-sizing: border-box;
+  outline: none;
+  &:focus{
+    border-bottom-color: #1a73e8;
+  }
+}

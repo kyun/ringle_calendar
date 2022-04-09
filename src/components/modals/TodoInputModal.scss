@@ -1,0 +1,48 @@
+.Overlay{
+  position: absolute;
+  z-index: 99;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0,0,0,0.16);
+}
+.TodoInputModal {
+  z-index: 99;
+  position: absolute;
+  overflow: hidden;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 448px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0px 24px 38px 3px rgb(0 0 0 / 14%), 0px 9px 46px 8px rgb(0 0 0 / 12%);
+  .head{
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+    padding: 4px 8px;
+    box-sizing: border-box;
+    background: #f0f0f0;
+  }
+  .content{
+    //
+    display: flex;
+    flex-direction: column;
+    height: 200px;
+    box-sizing: border-box;
+    padding: 16px;
+    .row{
+      display: flex;
+      gap: 8px;
+      padding: 16px;
+    }
+  }
+  .footer{
+    display:flex;
+    justify-content: flex-end;
+    box-sizing: border-box;
+    padding: 16px;
+  }
+}

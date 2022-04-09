@@ -6,6 +6,8 @@ import {
   addSchedule,
   getSchedule,
 } from '../../../features/schedule/scheduleSlice';
+import Portal from '../../common/Portal';
+import TodoInputModal from '../../modals/TodoInputModal';
 import './WeeklyScheduler.scss';
 
 const DAY = ['일', '월', '화', '수', '목', '금', '토'];
@@ -131,6 +133,9 @@ const WeeklyScheduler: React.FC<any> = () => {
   }, [schedule.schedule]);
   return (
     <div className="WeeklyScheduler">
+      <Portal>
+        <TodoInputModal />
+      </Portal>
       <div className="head">
         <div className="row">
           <div className="fixed-box" />
@@ -142,7 +147,7 @@ const WeeklyScheduler: React.FC<any> = () => {
                   today.format('YYYYMMDD') === d.format('YYYYMMDD') && '--today'
                 }`}
               >
-                <span className="day-name">{DAY[i]},</span>
+                <span className="day-name">{DAY[i]}</span>
                 <span className="date">{d.date()}</span>
               </div>
             );
