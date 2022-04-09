@@ -48,7 +48,10 @@
 - [ ] [Component] Scheduler 공통 반복 일정 렌더링
 
 
-#### 개발하지 않을지도 모를 기능
+#### 여유가 있다면 개발할 기능
 - [ ] [Component] 중첩 일정 UI 표시
 > Scheduler State의 구조를 다시 고민해봐야함.
 
+
+#### 버그
+- [ ] [Component] Weekly Scheduler 기간 드래그시 좌측 미니캘린더쪽으로 이동 시 일정 박스 사라지지 않음

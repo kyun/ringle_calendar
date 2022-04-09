@@ -2,7 +2,10 @@ import dayjs, { Dayjs } from 'dayjs';
 import React from 'react';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import { selectCalendar } from '../../../features/calendar/calendarSlice';
-import { getSchedule } from '../../../features/schedule/scheduleSlice';
+import {
+  addSchedule,
+  getSchedule,
+} from '../../../features/schedule/scheduleSlice';
 import './WeeklyScheduler.scss';
 
 const DAY = ['일', '월', '화', '수', '목', '금', '토'];
@@ -33,11 +36,13 @@ const WeeklyScheduler: React.FC<any> = () => {
   const today = React.useMemo(() => dayjs(Date.now()), []);
   const [thisWeek, setThisWeek] = React.useState<Dayjs[]>([]);
   const [nowPosition, setNowPosition] = React.useState('0%');
+  const [isMouseDown, setIsMouseDown] = React.useState(false);
   let pos = {
     index: -1,
     isActive: false,
     startY: 0,
-    endY: 0,
+    height: 0,
+    endY: 0, // NOTE: deprecated..
   };
   React.useEffect(() => {
     const diff = today.diff(today.startOf('day'));
@@ -58,47 +63,72 @@ const WeeklyScheduler: React.FC<any> = () => {
 
   const handleMouseDown = (index: number) => (e: any) => {
     if (!bodyRef.current) return;
-
     pos.isActive = true;
     pos.index = index;
+    pos.height = 24;
     const y = e.clientY - HEAD + bodyRef.current.scrollTop;
     pos.startY = Math.trunc(y / 24) * 24;
     privateTodoRef.current[index].style.top = `${pos.startY}px`;
     privateTodoRef.current[index].style.height = `${24}px`;
+    document.body.style.cursor = 'crosshair';
   };
-  const handleMouseMove = (index: number) => (e: any) => {
+  const handleMouseMove = (e: any) => {
     if (!bodyRef.current) return;
     if (!pos.isActive) return;
+    const { index } = pos;
+    // 실제 좌표
     const y = e.clientY - HEAD + bodyRef.current.scrollTop;
+
     pos.endY = Math.floor(y / 24) * 24;
     const height = pos.endY - pos.startY;
     const _h = Math.ceil(height / 24) * 24;
+    pos.height = _h < 0 ? Math.abs(_h) : _h + 24;
     if (_h < 0) {
-      privateTodoRef.current[index].style.height = `${Math.abs(_h)}px`;
+      privateTodoRef.current[index].style.height = `${pos.height}px`;
       privateTodoRef.current[index].style.top = `${pos.endY}px`;
       return;
     }
-    privateTodoRef.current[index].style.height = `${_h + 24}px`;
+    privateTodoRef.current[index].style.height = `${pos.height}px`;
   };
-  const handleMouseUp = (index: number) => (e: any) => {
-    pos.isActive = false;
-    pos.index = -1;
-    pos.endY = 0;
+  const handleMouseUp = (e: any) => {
+    const { index } = pos;
+    console.log(index, 'mouseup', e.clientY);
+
     console.log(
       pos.startY,
-      pos.endY,
-      privateTodoRef.current[index].clientHeight
+      pos.endY
+      // privateTodoRef.current[index]?.clientHeight
     );
-    if (!bodyRef.current) return;
+    console.log(privateTodoRef.current[0].style, index);
+
+    pos.index = -1;
+    document.body.style.cursor = 'unset';
+    console.log(thisWeek[index].format('YYYY-MM-DD'));
+    console.log(pos.startY / 48, (pos.startY + pos.height) / 48);
+    dispatch(
+      addSchedule({
+        date: thisWeek[index].format('YYYY-MM-DD'),
+        data: {
+          style: {
+            top: privateTodoRef.current[index].style.top,
+            height: privateTodoRef.current[index].style.height,
+          },
+          startAt: pos.startY / 48,
+          endAt: (pos.startY + pos.height) / 48,
+          title: '123',
+        },
+      })
+    );
+
+    pos.isActive = false;
+    pos.endY = 0;
     privateTodoRef.current[index].style.top = `${0}px`;
     privateTodoRef.current[index].style.height = `${0}px`;
   };
-  const handleMouseLeave = (index: number) => (e: any) => {
-    //
-    pos.isActive = false;
-    // privateTodoRef.current[index].style.top = `${0}px`;
-    // privateTodoRef.current[index].style.height = `${0}px`;
-  };
+
+  React.useEffect(() => {
+    console.log(schedule.schedule);
+  }, [schedule.schedule]);
   return (
     <div className="WeeklyScheduler">
       <div className="head">
@@ -112,7 +142,7 @@ const WeeklyScheduler: React.FC<any> = () => {
                   today.format('YYYYMMDD') === d.format('YYYYMMDD') && '--today'
                 }`}
               >
-                <span className="day-name">{DAY[i]}</span>
+                <span className="day-name">{DAY[i]},</span>
                 <span className="date">{d.date()}</span>
               </div>
             );
@@ -130,16 +160,13 @@ const WeeklyScheduler: React.FC<any> = () => {
           })}
         </div>
         {thisWeek.map((d, i) => {
-          console.log(d.format('YYYY-MM-DD'));
           return (
             <div
               className="box"
               key={i}
               onMouseDown={handleMouseDown(i)}
-              onMouseMove={handleMouseMove(i)}
-              onMouseUp={handleMouseUp(i)}
-              onMouseLeave={handleMouseLeave(i)}
-              // onMouseOut={handleMouseUp(i)}
+              onMouseMove={handleMouseMove}
+              onMouseUp={handleMouseUp}
             >
               <div
                 ref={(el) => {
@@ -149,8 +176,17 @@ const WeeklyScheduler: React.FC<any> = () => {
               />
               {schedule.schedule[d.format('YYYY-MM-DD')]?.map((el, i) => {
                 return (
-                  <div className="todobox" key={i}>
-                    1
+                  <div
+                    className={`saved-todobox ${
+                      el.endAt - el.startAt === 0.5 && '--row'
+                    }`}
+                    key={i}
+                    style={el.style}
+                  >
+                    <span className="title">{el.title}</span>
+                    <span className="period">
+                      {el.startAt} - {el.endAt}
+                    </span>
                   </div>
                 );
               })}

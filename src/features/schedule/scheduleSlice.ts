@@ -17,7 +17,14 @@ export interface ScheduleState {
 }
 const initialState: ScheduleState = {
   schedule: {
-    '2022-04-09': [1],
+    '2022-04-10': [
+      {
+        style: { top: '0px', height: '24px' },
+        startAt: 0,
+        endAt: 0.5,
+        title: 'none',
+      },
+    ],
   },
   status: 'idle',
 };
@@ -30,12 +37,15 @@ export const scheduleSlice = createSlice({
       state,
       action: PayloadAction<{ date: string; data: any }>
     ) => {
-      state.schedule = {
-        ...state.schedule,
-        [action.payload.date]: state.schedule[action.payload.date].concat(
-          action.payload.data
-        ),
-      };
+      console.log(action.payload.date, action.payload.data);
+      console.log(state.schedule[action.payload.date]);
+      if (state.schedule?.[action.payload.date]) {
+        state.schedule[action.payload.date] = state.schedule[
+          action.payload.date
+        ].concat(action.payload.data);
+      } else {
+        state.schedule[action.payload.date] = [action.payload.data];
+      }
     },
   },
 });
