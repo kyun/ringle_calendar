@@ -31,7 +31,7 @@ const SwitchButton: React.FC<Props> = ({
         id={id1}
         name="switch"
         checked={value}
-        onClick={() => handleChange(true)}
+        onChange={() => handleChange(true)}
       />
       <label htmlFor={id1}>주</label>
 
@@ -40,7 +40,7 @@ const SwitchButton: React.FC<Props> = ({
         id={id2}
         name="switch"
         checked={!value}
-        onClick={() => handleChange(false)}
+        onChange={() => handleChange(false)}
       />
       <label htmlFor={id2}>월</label>
     </div>

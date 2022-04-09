@@ -1,13 +1,16 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import dayjs from 'dayjs';
 import { RootState, AppThunk } from '../../app/store';
 
 export interface CalendarState {
   now: number;
+  selected: number;
   status: 'idle' | 'loading' | 'failed';
 }
 
 const initialState: CalendarState = {
-  now: -1,
+  now: Date.now(),
+  selected: Date.now(),
   status: 'idle',
 };
 
@@ -20,14 +23,29 @@ export const incrementAsync = createAsyncThunk(
   }
 );
 
-export const counterSlice = createSlice({
+export const calendarSlice = createSlice({
   name: 'counter',
   initialState,
   // The `reducers` field lets us define reducers and generate associated actions
   reducers: {
     // Use the PayloadAction type to declare the contents of `action.payload`
     selectDate: (state, action: PayloadAction<number>) => {
-      // state.value += action.payload;
+      state.selected = action.payload;
+    },
+    selectToday: (state) => {
+      state.selected = Date.now();
+    },
+    nextWeek: (state) => {
+      state.selected = dayjs(state.selected).add(1, 'week').unix() * 1000;
+    },
+    prevWeek: (state) => {
+      state.selected = dayjs(state.selected).subtract(1, 'week').unix() * 1000;
+    },
+    nextMonth: (state) => {
+      state.selected = dayjs(state.selected).add(1, 'month').unix() * 1000;
+    },
+    prevMonth: (state) => {
+      state.selected = dayjs(state.selected).subtract(1, 'month').unix() * 1000;
     },
   },
   // The `extraReducers` field lets the slice handle actions defined elsewhere,
@@ -43,3 +61,15 @@ export const counterSlice = createSlice({
       });
   },
 });
+export const {
+  selectDate,
+  nextWeek,
+  prevWeek,
+  nextMonth,
+  prevMonth,
+  selectToday,
+} = calendarSlice.actions;
+
+export const selectCalendar = (state: RootState) => state.calendar;
+
+export default calendarSlice.reducer;

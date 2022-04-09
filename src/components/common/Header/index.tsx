@@ -13,9 +13,39 @@ import {
 } from 'react-icons/md';
 import SimpleButton from '../SimpleButton';
 import SwitchButton from '../SwitchButton';
+import { useAppDispatch, useAppSelector } from '../../../app/hooks';
+import {
+  nextMonth,
+  nextWeek,
+  prevMonth,
+  prevWeek,
+  selectCalendar,
+  selectToday,
+} from '../../../features/calendar/calendarSlice';
+import dayjs from 'dayjs';
 
 const Header: React.FC<any> = () => {
+  const calendar = useAppSelector(selectCalendar);
   const [isWeek, setIsWeek] = React.useState(true);
+  const dispatch = useAppDispatch();
+
+  const handlePrevious = () => {
+    if (isWeek) {
+      dispatch(prevWeek());
+    } else {
+      dispatch(prevMonth());
+    }
+  };
+  const handleNext = () => {
+    if (isWeek) {
+      dispatch(nextWeek());
+    } else {
+      dispatch(nextMonth());
+    }
+  };
+  React.useEffect(() => {
+    console.log(calendar);
+  }, [calendar]);
   return (
     <header>
       <div className="leftbox">
@@ -30,18 +60,21 @@ const Header: React.FC<any> = () => {
       <div className="centerbox">
         <div className="datebox">
           <SimpleButton
+            onClick={() => dispatch(selectToday())}
             theme="border"
             style={{ padding: '0 12px', marginRight: 16 }}
           >
             오늘
           </SimpleButton>
-          <IconButton size={32} color="#4b4b4b">
+          <IconButton onClick={handlePrevious} size={32} color="#4b4b4b">
             <MdOutlineChevronLeft />
           </IconButton>
-          <IconButton size={32} color="#4b4b4b">
+          <IconButton onClick={handleNext} size={32} color="#4b4b4b">
             <MdOutlineChevronRight />
           </IconButton>
-          <span className="title">2022년 3월</span>
+          <span className="title">
+            {dayjs(calendar.selected).format('YYYY년 MM월')}
+          </span>
         </div>
         <div className="toolbox">
           <IconButton size={40} color="#4b4b4b">
