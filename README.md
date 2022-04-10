@@ -50,6 +50,8 @@
 
 #### 여유가 있다면 개발할 기능
 - [ ] [Component] 중첩 일정 UI 표시
+- [x] [Component] ESC키로 Todo Input Modal 닫기 
+- [ ] [Component] 마우스 스크롤로 Monthly Scheduler 월 변경
 > Scheduler State의 구조를 다시 고민해봐야함.
 
 

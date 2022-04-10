@@ -43,9 +43,7 @@ const Header: React.FC<any> = () => {
       dispatch(nextMonth());
     }
   };
-  React.useEffect(() => {
-    console.log(calendar);
-  }, [calendar]);
+
   return (
     <header>
       <div className="leftbox">

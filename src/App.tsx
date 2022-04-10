@@ -8,13 +8,11 @@ import MiniCalendar from './components/calendar/MiniCalendar';
 import WeeklyScheduler from './components/calendar/WeeklyScheduler/index2';
 import { useAppSelector } from './app/hooks';
 import { selectCalendar } from './features/calendar/calendarSlice';
+import MonthlyScheduler from './components/calendar/MonthlyScheduler';
 
 function App() {
   const calendar = useAppSelector(selectCalendar);
 
-  React.useEffect(() => {
-    console.log(calendar);
-  }, [calendar]);
   return (
     <div className="App">
       <Header />
@@ -26,7 +24,7 @@ function App() {
           {calendar.viewMode === 'weekly' ? (
             <WeeklyScheduler />
           ) : (
-            <div>Monthly!</div>
+            <MonthlyScheduler />
           )}
         </div>
         <div className="right-section"></div>
