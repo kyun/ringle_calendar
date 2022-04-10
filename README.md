@@ -29,7 +29,7 @@
 - [x] Mini Calendar 
 - [x] Weekly Scheduler
 - [ ] Weekly Scheduler Responsible
-- [ ] Monhtly Scheduler
+- [x] Monhtly Scheduler
 - [ ] Monthly Scheduler Responsible
 - [x] Todo Input Modal
 - [ ] Monthly Scheduler Floating Schedule List Modal
@@ -40,7 +40,7 @@
 - [x] [Component] Mini Calendar 날짜 변경 기능
 - [x] [Component] Weekly Scheduler 기간 드래그 선택 기능
 - [x] [Component] Weekly Scheduler 등록된 일정 렌더링
-- [ ] [Component] Monthly Scheduler 등록된 일정 렌더링
+- [x] [Component] Monthly Scheduler 등록된 일정 렌더링
 - [x] [Component] Todo Input Modal 일정 등록 기능
 - [x] [Component] Todo Input Modal 일정 삭제 기능
 - [x] [Component] Todo Input Modal 일정 수정 기능

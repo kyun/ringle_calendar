@@ -7,11 +7,26 @@ import {
   prevMonth,
   selectCalendar,
 } from '../../../features/calendar/calendarSlice';
+import { getSchedule } from '../../../features/schedule/scheduleSlice';
+import Portal from '../../common/Portal';
+import TodoInputModal from '../../modals/TodoInputModal';
 import './MonthlyScheduler.scss';
 
+const INIT_DRAFT = {
+  date: '',
+  startAt: 0,
+  endAt: 1.5,
+  title: '(제목 없음)',
+  background: '#FECA00',
+};
 const MonthlyScheduler: React.FC<any> = () => {
   const calendar = useAppSelector(selectCalendar);
+  const { schedule } = useAppSelector(getSchedule);
+
   const dispatch = useAppDispatch();
+  const [draft, setDraft] = React.useState(INIT_DRAFT);
+
+  const [isInputModalOpen, setIsInputModalOpen] = React.useState(false);
 
   const today = React.useMemo(() => dayjs(Date.now()), []);
   const [selected, setSelected] = React.useState(dayjs(Date.now()));
@@ -55,39 +70,24 @@ const MonthlyScheduler: React.FC<any> = () => {
     setSelected(dayjs(calendar.selected));
   }, [calendar.selected]);
 
-  React.useEffect(() => {
-    const debounce = (fn: Function, ms = 300) => {
-      let timeoutId: ReturnType<typeof setTimeout>;
-      return function (this: any, ...args: any[]) {
-        clearTimeout(timeoutId);
-        timeoutId = setTimeout(() => fn.apply(this, args), ms);
-      };
-    };
-    const handleScroll = (e: any) => {
-      if (!pos.isScrollable) return;
-      const isScrollingDown = Math.sign(e.wheelDeltaY);
-      console.log(isScrollingDown);
-      setInterval(() => {
-        pos.isScrollable = !pos.isScrollable;
-      }, 500);
-      pos.isScrollable = false;
-      if (isScrollingDown) {
-        dispatch(prevMonth());
-      } else {
-        dispatch(nextMonth());
-      }
-    };
-    const wrap = (e: any) => {
-      debounce(handleScroll, 400)(e);
-    };
-    window.addEventListener('wheel', handleScroll);
-    return () => {
-      window.removeEventListener('wheel', handleScroll);
-    };
-  }, []);
-
+  const handleClickDate = (date: string) => {
+    setDraft((prev) => ({
+      ...prev,
+      date,
+    }));
+    setIsInputModalOpen(true);
+  };
   return (
     <div className="MonthlyScheduler">
+      {isInputModalOpen && (
+        <Portal>
+          <TodoInputModal
+            draft={draft}
+            selectedScheduleIndex={-1}
+            onClose={() => setIsInputModalOpen(false)}
+          />
+        </Portal>
+      )}
       <div className="row --fixed">
         {DAY_NAME.map((day, i) => {
           return (
@@ -108,9 +108,20 @@ const MonthlyScheduler: React.FC<any> = () => {
                   className={`box ${isToday ? '--today' : ''} ${
                     isPresent ? '--black' : ''
                   }`}
+                  onClick={() => handleClickDate(d.format('YYYY-MM-DD'))}
                   key={j}
                 >
                   {d.date()}
+                  <div className="schedule-list">
+                    {schedule?.[d.format('YYYY-MM-DD')]?.map((el, index) => {
+                      return (
+                        <div className="schedule-item" key={index}>
+                          {el.title}
+                        </div>
+                      );
+                    })}
+                    {/* <button className="more-button">n개 더보기</button> */}
+                  </div>
                 </div>
               );
             })}

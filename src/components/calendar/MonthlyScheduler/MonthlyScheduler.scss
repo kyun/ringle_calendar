@@ -21,6 +21,7 @@
       flex: 1 1 0%;
       border-right: 1px solid #eee;
       color: #70757a;
+      cursor: pointer;
       &.--black {
         color: black;
       }
@@ -30,7 +31,29 @@
         border: 1px solid #1a73e8;
         box-sizing: border-box;
       }
-
+      &:hover{
+        background: #eee;
+      }
+      .schedule-list{
+        padding-top: 4px;
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        overflow-y: auto;
+        gap: 4px;
+        .schedule-item{
+          width: 100%;
+          height: 24px;
+          border-radius: 4px;
+          background-color: #feca00;
+        }
+        .more-button{
+                    width: 100%;
+          height: 28px;
+          border-radius: 4px;
+          background-color: red;
+        }
+      }
     }
   }
 }
