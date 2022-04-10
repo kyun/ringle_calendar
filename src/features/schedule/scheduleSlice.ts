@@ -2,30 +2,34 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { RootState, AppThunk } from '../../app/store';
 import React from 'react';
+import dayjs from 'dayjs';
 
 export interface Schedule {
-  style: React.CSSProperties;
   title: string;
   startAt: number;
   endAt: number;
+  date: string;
+  background: string;
 }
 export interface ScheduleState {
   schedule: {
-    [date: string]: any[];
+    [date: string]: Schedule[];
   };
   status: 'idle' | 'loading' | 'failed';
 }
 const initialState: ScheduleState = {
   schedule: {
-    '2022-04-10': [
+    [dayjs(Date.now()).format('YYYY-MM-DD')]: [
       {
-        style: { top: '0px', height: '24px' },
+        date: dayjs(Date.now()).format('YYYY-MM-DD'),
         startAt: 0,
         endAt: 0.5,
-        title: 'none',
+        title: '(SAMPLE)',
+        background: '#FECA00',
       },
     ],
   },
+
   status: 'idle',
 };
 
@@ -47,10 +51,34 @@ export const scheduleSlice = createSlice({
         state.schedule[action.payload.date] = [action.payload.data];
       }
     },
+    updateSchedule: (
+      state,
+      action: PayloadAction<{ date: string; data: any; index: number }>
+    ) => {
+      //
+      const { date, data, index } = action.payload;
+      state.schedule[date] = state.schedule[date].map((el, i) => {
+        if (i === index) {
+          return data;
+        }
+        return el;
+      });
+    },
+    deleteSchedule: (
+      state,
+      action: PayloadAction<{ date: string; index: number }>
+    ) => {
+      //
+      const { date, index } = action.payload;
+      state.schedule[date] = state.schedule[date].filter((el, i) => {
+        return i !== index;
+      });
+    },
   },
 });
 
-export const { addSchedule } = scheduleSlice.actions;
+export const { addSchedule, updateSchedule, deleteSchedule } =
+  scheduleSlice.actions;
 
 export const getSchedule = (state: RootState) => state.schedule;
 

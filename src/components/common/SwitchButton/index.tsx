@@ -1,4 +1,6 @@
 import React from 'react';
+import { useAppDispatch } from '../../../app/hooks';
+import { updateViewMode } from '../../../features/calendar/calendarSlice';
 import './SwitchButton.scss';
 
 interface Props {
@@ -14,6 +16,7 @@ const SwitchButton: React.FC<Props> = ({
   value,
   onChange,
 }) => {
+  const dispatch = useAppDispatch();
   const [id1, id2] = React.useMemo(
     () => [
       id?.[0] ?? Date.now().toString(),
@@ -22,6 +25,11 @@ const SwitchButton: React.FC<Props> = ({
     []
   );
   const handleChange = (f: boolean) => {
+    if (f) {
+      dispatch(updateViewMode('weekly'));
+    } else {
+      dispatch(updateViewMode('monthly'));
+    }
     onChange(f);
   };
   return (

@@ -4,8 +4,11 @@ import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import { selectCalendar } from '../../../features/calendar/calendarSlice';
 import {
   addSchedule,
+  deleteDraftSchedule,
   getSchedule,
+  updateDraftSchedule,
 } from '../../../features/schedule/scheduleSlice';
+import { generateStyle } from '../../../utils/schedule';
 import Portal from '../../common/Portal';
 import TodoInputModal from '../../modals/TodoInputModal';
 import './WeeklyScheduler.scss';
@@ -38,7 +41,12 @@ const WeeklyScheduler: React.FC<any> = () => {
   const today = React.useMemo(() => dayjs(Date.now()), []);
   const [thisWeek, setThisWeek] = React.useState<Dayjs[]>([]);
   const [nowPosition, setNowPosition] = React.useState('0%');
-  const [isMouseDown, setIsMouseDown] = React.useState(false);
+  const [isInputModalOpen, setIsInputModalOpen] = React.useState(false);
+  const [position, setPosition] = React.useState({
+    index: -1,
+    startY: 0,
+    height: 0,
+  });
   let pos = {
     index: -1,
     isActive: false,
@@ -93,49 +101,74 @@ const WeeklyScheduler: React.FC<any> = () => {
     privateTodoRef.current[index].style.height = `${pos.height}px`;
   };
   const handleMouseUp = (e: any) => {
-    const { index } = pos;
-    console.log(index, 'mouseup', e.clientY);
+    const { index, startY, height } = pos;
 
-    console.log(
-      pos.startY,
-      pos.endY
-      // privateTodoRef.current[index]?.clientHeight
-    );
-    console.log(privateTodoRef.current[0].style, index);
-
-    pos.index = -1;
     document.body.style.cursor = 'unset';
-    console.log(thisWeek[index].format('YYYY-MM-DD'));
-    console.log(pos.startY / 48, (pos.startY + pos.height) / 48);
+    console.log(generateStyle(startY / 48, (pos.startY + pos.height) / 48));
+    dispatch(
+      updateDraftSchedule({
+        style: {
+          top: pos.startY,
+          height: pos.height,
+        },
+        startAt: pos.startY / 48,
+        endAt: (pos.startY + pos.height) / 48,
+        title: 'Temporary',
+        date: thisWeek[index].format('YYYY-MM-DD'),
+      })
+    );
+    setIsInputModalOpen(true);
+    setPosition({ index, startY, height });
+    privateTodoRef.current[index].style.top = `${0}px`;
+    privateTodoRef.current[index].style.height = `${0}px`;
+  };
+
+  const handleClose = () => {
+    const { index } = position;
+    console.log(index);
+    pos.isActive = false;
+    pos.endY = 0;
+
+    // pos.index = -1;
+    dispatch(deleteDraftSchedule());
+    setIsInputModalOpen(false);
+    setPosition({
+      index: -1,
+      startY: 0,
+      height: 0,
+    });
+  };
+  const handleSubmit = () => {
+    const { index, startY, height } = position;
     dispatch(
       addSchedule({
         date: thisWeek[index].format('YYYY-MM-DD'),
         data: {
           style: {
-            top: privateTodoRef.current[index].style.top,
-            height: privateTodoRef.current[index].style.height,
+            top: startY,
+            height,
           },
-          startAt: pos.startY / 48,
-          endAt: (pos.startY + pos.height) / 48,
-          title: '123',
+          startAt: startY / 48,
+          endAt: (startY + height) / 48,
+          title: 'ee',
         },
       })
     );
-
-    pos.isActive = false;
-    pos.endY = 0;
-    privateTodoRef.current[index].style.top = `${0}px`;
-    privateTodoRef.current[index].style.height = `${0}px`;
+    handleClose();
   };
-
+  const handleClickSchedule = (date: string, index: number) => {
+    console.log(schedule.schedule[date][index]);
+  };
   React.useEffect(() => {
     console.log(schedule.schedule);
   }, [schedule.schedule]);
   return (
     <div className="WeeklyScheduler">
-      <Portal>
-        <TodoInputModal />
-      </Portal>
+      {isInputModalOpen && (
+        <Portal>
+          <TodoInputModal onClose={handleClose} onSubmit={handleSubmit} />
+        </Portal>
+      )}
       <div className="head">
         <div className="row">
           <div className="fixed-box" />
@@ -179,6 +212,18 @@ const WeeklyScheduler: React.FC<any> = () => {
                 }}
                 className="todobox"
               />
+              {schedule.draftSchedule?.date === d.format('YYYY-MM-DD') && (
+                <div
+                  className="saved-todobox"
+                  style={schedule.draftSchedule.style}
+                >
+                  <span className="title">{schedule.draftSchedule.title}</span>
+                  <span className="period">
+                    {schedule.draftSchedule.startAt} -{' '}
+                    {schedule.draftSchedule.endAt}
+                  </span>
+                </div>
+              )}
               {schedule.schedule[d.format('YYYY-MM-DD')]?.map((el, i) => {
                 return (
                   <div
@@ -186,6 +231,24 @@ const WeeklyScheduler: React.FC<any> = () => {
                       el.endAt - el.startAt === 0.5 && '--row'
                     }`}
                     key={i}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      console.log('onClick');
+                      handleClickSchedule(d.format('YYYY-MM-DD'), i);
+                    }}
+                    onMouseDown={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                    }}
+                    onMouseUp={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                    }}
+                    onMouseMove={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                    }}
                     style={el.style}
                   >
                     <span className="title">{el.title}</span>

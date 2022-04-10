@@ -31,7 +31,7 @@
 - [ ] Weekly Scheduler Responsible
 - [ ] Monhtly Scheduler
 - [ ] Monthly Scheduler Responsible
-- [ ] Todo Input Modal
+- [x] Todo Input Modal
 - [ ] Monthly Scheduler Floating Schedule List Modal
 
 #### 기능
@@ -39,11 +39,11 @@
 - [ ] [Redux] Scheduler State 정의
 - [x] [Component] Mini Calendar 날짜 변경 기능
 - [x] [Component] Weekly Scheduler 기간 드래그 선택 기능
-- [ ] [Component] Weekly Scheduler 등록된 일정 렌더링
+- [x] [Component] Weekly Scheduler 등록된 일정 렌더링
 - [ ] [Component] Monthly Scheduler 등록된 일정 렌더링
-- [ ] [Component] Todo Input Modal 일정 등록 기능
-- [ ] [Component] Todo Input Modal 일정 삭제 기능
-- [ ] [Component] Todo Input Modal 일정 수정 기능
+- [x] [Component] Todo Input Modal 일정 등록 기능
+- [x] [Component] Todo Input Modal 일정 삭제 기능
+- [x] [Component] Todo Input Modal 일정 수정 기능
 - [ ] [Component] Todo Input Modal 반복 일정 등록 기능
 - [ ] [Component] Scheduler 공통 반복 일정 렌더링
 

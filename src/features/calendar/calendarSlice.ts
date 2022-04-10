@@ -5,6 +5,7 @@ import { RootState, AppThunk } from '../../app/store';
 export interface CalendarState {
   now: number;
   selected: number;
+  viewMode: 'weekly' | 'monthly';
   status: 'idle' | 'loading' | 'failed';
 }
 
@@ -12,6 +13,7 @@ const initialState: CalendarState = {
   now: Date.now(),
   selected: Date.now(),
   status: 'idle',
+  viewMode: 'weekly',
 };
 
 export const incrementAsync = createAsyncThunk(
@@ -29,6 +31,9 @@ export const calendarSlice = createSlice({
   // The `reducers` field lets us define reducers and generate associated actions
   reducers: {
     // Use the PayloadAction type to declare the contents of `action.payload`
+    updateViewMode: (state, action: PayloadAction<'monthly' | 'weekly'>) => {
+      state.viewMode = action.payload;
+    },
     selectDate: (state, action: PayloadAction<number>) => {
       state.selected = action.payload;
     },
@@ -68,6 +73,7 @@ export const {
   nextMonth,
   prevMonth,
   selectToday,
+  updateViewMode,
 } = calendarSlice.actions;
 
 export const selectCalendar = (state: RootState) => state.calendar;

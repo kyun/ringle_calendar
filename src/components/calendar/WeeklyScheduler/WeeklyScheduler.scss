@@ -40,7 +40,6 @@
           text-align: center;
           color: #70757a;
           font-size: 26px;
-          letter-spacing: -2.6px;
           line-height: 46px;
           width: 46px;
           height: 46px;
@@ -98,20 +97,21 @@
         position: absolute;
         width: 100%;
   
-        background: red;
+        background: rgba(254,202,0,0.4);
         border-radius: 5px;
         cursor: crosshair;
             box-shadow: 0px 6px 10px 0px rgb(0 0 0 / 14%), 0px 1px 18px 0px rgb(0 0 0 / 12%), 0px 3px 5px -1px rgb(0 0 0 / 20%);
       }
       .saved-todobox{
-        z-index: 10;
+        z-index: 11;
         position: absolute;
         width: 90%;
   
-        background: orange;
+        background: #feca00;
+        background: rgba(254,202,0,0.8);
         border-radius: 5px;
-        cursor: crosshair;
-        box-shadow: 0px 6px 10px 0px rgb(0 0 0 / 14%), 0px 1px 18px 0px rgb(0 0 0 / 12%), 0px 3px 5px -1px rgb(0 0 0 / 20%);
+        cursor: pointer;
+        // box-shadow: 0px 6px 10px 0px rgb(0 0 0 / 14%), 0px 1px 18px 0px rgb(0 0 0 / 12%), 0px 3px 5px -1px rgb(0 0 0 / 20%);
         font-size: 12px;
 
         display: flex;
