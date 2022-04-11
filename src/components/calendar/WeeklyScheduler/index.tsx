@@ -9,15 +9,15 @@ import './WeeklyScheduler.scss';
 
 const WeeklyScheduler: React.FC<any> = () => {
   const calendar = useAppSelector(getCalendar);
-  const [days, setDays] = React.useState<Dayjs[]>([]);
   const now = React.useMemo(() => dayjs(Date.now()), []);
-  React.useEffect(() => {
+  const days = React.useMemo(() => {
     const startOfWeek = dayjs(calendar.currentMills).startOf('week');
     const tw = Array(7)
       .fill(0)
       .map((_, idx) => startOfWeek.add(idx, 'day'));
-    setDays(tw);
+    return tw;
   }, [calendar.currentMills]);
+
   return (
     <div className="WeeklyScheduler">
       <SchedulerHeader days={days} now={now} />

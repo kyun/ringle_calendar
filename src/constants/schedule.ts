@@ -5,7 +5,7 @@ export const SCHEDULER_HEIGHT = 100;
 
 export const DAY_NAME = ['일', '월', '화', '수', '목', '금', '토'];
 export const DAY_NAME_EN = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
-export const COLORS = ['#2ebcb2', '#f8d548', '#e7737d', '#5472ec'];
+export const COLORS = ['#7d5df5', '#2ebcb2', '#f8d548', '#e7737d', '#5472ec'];
 export const TIME_NAME = [
   '오전 12:00',
   '오전 12:30',

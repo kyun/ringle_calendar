@@ -1,7 +1,8 @@
-import { Dayjs } from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import React from 'react';
 import { useAppSelector } from '../../../app/hooks';
 import {
+  COLORS,
   DAY_NAME_EN,
   HALF_HOUR_HEIGHT,
   HEADER_HEIGHT,
@@ -13,6 +14,7 @@ import {
   getSchedule,
   Schedule,
 } from '../../../features/schedule/scheduleSlice';
+import { hexToRgba } from '../../../utils/color';
 import { deduplicator, generateStyle } from '../../../utils/schedule';
 import Portal from '../../common/Portal';
 import TodoInputModal from '../../modals/TodoInputModal';
@@ -40,24 +42,31 @@ const _HOUR_NAME = Array(24)
     }
   });
 
-const INIT_DRAFT = {
+const INIT_DRAFT: Schedule = {
+  type: 'schedule',
   date: '',
   startAt: 0,
   endAt: 0,
   title: '(제목 없음)',
-  background: '#f8d548',
+  background: COLORS[0],
   id: '',
 };
 const SchedulerBody: React.FC<Props> = ({ days, now }) => {
-  const { schedule, routine } = useAppSelector(getSchedule);
+  const { schedule, routine, defaultBackground } = useAppSelector(getSchedule);
   const bodyRef = React.useRef<HTMLDivElement>(null);
   const resizableDivRefs = React.useRef<HTMLDivElement[]>([]);
+  const initDraft = React.useMemo(() => {
+    return {
+      ...INIT_DRAFT,
+      background: defaultBackground,
+    };
+  }, [defaultBackground]);
   const [isInputModalOpen, setIsInputModalOpen] = React.useState(false);
   const [selectedScheduleInfo, setSelectedScheduleInfo] = React.useState({
     targetId: '',
     date: '',
   });
-  const [draft, setDraft] = React.useState(INIT_DRAFT);
+  const [draft, setDraft] = React.useState(initDraft);
 
   const nowBarStyleTop = React.useMemo(() => {
     const diff = now.diff(now.startOf('day'));
@@ -146,7 +155,7 @@ const SchedulerBody: React.FC<Props> = ({ days, now }) => {
       targetId: '',
       date: '',
     });
-    setDraft(INIT_DRAFT);
+    setDraft(initDraft);
   };
 
   const disableMouseEvent = (e: React.MouseEvent<HTMLElement>) => {
@@ -154,15 +163,19 @@ const SchedulerBody: React.FC<Props> = ({ days, now }) => {
     e.preventDefault();
   };
 
-  const handleScheduleClick = (el: Schedule, id: string) => {
+  const handleScheduleClick = (el: Schedule) => {
     let _date = el.date === '' ? now.format('YYYY-MM-DD') : el.date;
     setIsInputModalOpen(true);
     setDraft({ ...el, date: _date });
     setSelectedScheduleInfo({
-      targetId: id,
+      targetId: el.id,
       date: el.date,
     });
   };
+
+  React.useEffect(() => {
+    setDraft((prev) => ({ ...prev, background: defaultBackground }));
+  }, [defaultBackground]);
 
   return (
     <div className="SchedulerBody" ref={bodyRef}>
@@ -172,8 +185,6 @@ const SchedulerBody: React.FC<Props> = ({ days, now }) => {
             draft={draft}
             setDraft={setDraft}
             onClose={handleInputModalClose}
-            selectedScheduleIndex={-1}
-            targetId={selectedScheduleInfo.targetId}
           />
         </Portal>
       )}
@@ -185,13 +196,21 @@ const SchedulerBody: React.FC<Props> = ({ days, now }) => {
         ))}
       </div>
       {days.map((day, index) => {
+        const clone = day.clone();
+        const isPast = clone.add(24, 'hour').unix() < now.unix();
         const isToday = day.format('YYYYMMDD') === now.format('YYYYMMDD');
-        const sorted = [...(schedule?.[day.format('YYYY-MM-DD')] ?? [])]
-          ?.sort((a, b) => a.startAt - b.startAt)
-          ?.map((el) => {
-            return [el.startAt, el.endAt];
-          });
-        const position = deduplicator(sorted);
+        const _routine = (routine[DAY_NAME_EN[index]] ?? []).map((data) => ({
+          ...data,
+          date: day.format('YYYY-MM-DD'),
+        }));
+        const sortedSchedule = [
+          ...(schedule?.[day.format('YYYY-MM-DD')] ?? []),
+          ..._routine,
+        ].sort((a, b) => a.startAt - b.startAt);
+        const ranged = sortedSchedule?.map((el) => {
+          return [el.startAt, el.endAt];
+        });
+        const position = deduplicator(ranged);
         return (
           <div
             className="day-column"
@@ -206,6 +225,7 @@ const SchedulerBody: React.FC<Props> = ({ days, now }) => {
                 resizableDivRefs.current[index] = el as HTMLDivElement;
               }}
               className="resizable-div"
+              style={{ background: hexToRgba(draft.background, 0.6) }}
             />
             {/* draft schedule */}
             {draft.date === day.format('YYYY-MM-DD') && (
@@ -231,7 +251,7 @@ const SchedulerBody: React.FC<Props> = ({ days, now }) => {
               <div key={index} className="hour-box"></div>
             ))}
             {/* Saved Schedule */}
-            {schedule?.[day.format('YYYY-MM-DD')]?.map((el, index) => {
+            {sortedSchedule?.map((el, index) => {
               return (
                 <div
                   className={`saved-schedule ${
@@ -243,12 +263,13 @@ const SchedulerBody: React.FC<Props> = ({ days, now }) => {
                   style={{
                     ...generateStyle(el.startAt, el.endAt),
                     ...position[index],
+                    background: hexToRgba(el.background, isPast ? 0.4 : 1),
                   }}
                   key={index}
                   onMouseDown={disableMouseEvent}
                   // onMouseMove={disableMouseEvent}
                   // onMouseUp={disableMouseEvent}
-                  onClick={() => handleScheduleClick(el, el.id)}
+                  onClick={() => handleScheduleClick(el)}
                 >
                   <span className="title">{el.title}</span>
                   <span className="period">
@@ -259,7 +280,7 @@ const SchedulerBody: React.FC<Props> = ({ days, now }) => {
             })}
 
             {/* Saved Routine */}
-            {routine?.[DAY_NAME_EN[index]]?.map((el, index) => {
+            {/* {routine?.[DAY_NAME_EN[index]]?.map((el, index) => {
               return (
                 <div
                   className={`saved-schedule ${
@@ -281,7 +302,7 @@ const SchedulerBody: React.FC<Props> = ({ days, now }) => {
                   </span>
                 </div>
               );
-            })}
+            })} */}
           </div>
         );
       })}

@@ -1,11 +1,11 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { v4 as uuidv4 } from 'uuid';
 
-import { RootState, AppThunk } from '../../app/store';
-import React from 'react';
+import { RootState } from '../../app/store';
 import dayjs from 'dayjs';
 
 export interface Schedule {
+  type: 'routine' | 'schedule';
   title: string;
   startAt: number;
   endAt: number;
@@ -14,6 +14,7 @@ export interface Schedule {
   id: string;
 }
 export interface ScheduleState {
+  defaultBackground: string;
   schedule: {
     [date: string]: Schedule[];
   };
@@ -22,28 +23,32 @@ export interface ScheduleState {
   };
 }
 const initialState: ScheduleState = {
+  defaultBackground: '#7d5df5',
   schedule: {
     [dayjs(Date.now()).format('YYYY-MM-DD')]: [
       {
+        type: 'schedule',
         date: dayjs(Date.now()).format('YYYY-MM-DD'),
         startAt: 0,
         endAt: 0.5,
         title: '(SAMPLE)',
-        background: '#f8d548',
+        background: '#7d5df5',
         id: uuidv4(),
       },
     ],
   },
   routine: {
-    // ['MON']: [
-    //   {
-    //     date: '',
-    //     startAt: 1,
-    //     endAt: 1.5,
-    //     title: '(SAMPLE)',
-    //     background: '#f8d548',
-    //   },
-    // ],
+    ['MON']: [
+      {
+        type: 'routine',
+        id: 'sample',
+        date: '',
+        startAt: 10,
+        endAt: 11.5,
+        title: '(SAMPLE)',
+        background: '#7d5df5',
+      },
+    ],
   },
 };
 
@@ -57,20 +62,24 @@ export const scheduleSlice = createSlice({
     ) => {
       //
       const { day, data } = action.payload;
-      if (state.schedule?.[day]) {
-        state.schedule[day] = state.schedule[day].concat(data);
+      if (state.routine?.[day]) {
+        state.routine[day] = state.routine[day].concat({
+          ...data,
+          id: uuidv4(),
+        });
       } else {
-        state.schedule[day] = [data];
+        state.routine[day] = [{ ...data, id: uuidv4() }];
       }
     },
     deleteRoutine: (
       state,
-      action: PayloadAction<{ day: string; index: number }>
+      action: PayloadAction<{ day: string; id: string }>
     ) => {
       //
-      const { day, index } = action.payload;
-      state.schedule[day] = state.schedule[day].filter((el, i) => {
-        return i !== index;
+      const { day, id } = action.payload;
+      console.log(day, id);
+      state.routine[day] = state.routine[day]?.filter((el) => {
+        return el.id !== id;
       });
     },
     addSchedule: (
@@ -78,7 +87,6 @@ export const scheduleSlice = createSlice({
       action: PayloadAction<{ date: string; data: Schedule }>
     ) => {
       const { date, data } = action.payload;
-
       if (state.schedule?.[date]) {
         const clone = state.schedule[date].concat({ ...data, id: uuidv4() });
         const sorted = clone.sort((a, b) => a.startAt - b.startAt);
@@ -114,11 +122,20 @@ export const scheduleSlice = createSlice({
         return el.id !== id;
       });
     },
+    setDefaultBackground: (state, action: PayloadAction<string>) => {
+      state.defaultBackground = action.payload;
+    },
   },
 });
 
-export const { addRoutine, addSchedule, updateSchedule, deleteSchedule } =
-  scheduleSlice.actions;
+export const {
+  addRoutine,
+  deleteRoutine,
+  addSchedule,
+  updateSchedule,
+  deleteSchedule,
+  setDefaultBackground,
+} = scheduleSlice.actions;
 
 export const getSchedule = (state: RootState) => state.schedule;
 

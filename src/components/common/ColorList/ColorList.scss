@@ -1,0 +1,30 @@
+
+.ColorList {
+  border-top: 1px solid #eee;
+  padding: 16px 0;
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  .ColorButton{
+    position: relative;
+    width: 36px;
+    height: 36px;
+    border-radius: 100%;
+    border: none;
+    cursor: pointer;
+    overflow: hidden;
+    &.--selected::before{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      content: '✔';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.14);
+    }
+  }
+}

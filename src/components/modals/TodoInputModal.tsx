@@ -1,10 +1,13 @@
+/* eslint-disable no-unused-vars */
 import dayjs from 'dayjs';
 import React from 'react';
 import { MdClose } from 'react-icons/md';
 import { useAppDispatch } from '../../app/hooks';
-import { COLORS } from '../../constants/schedule';
+import { COLORS, DAY_NAME_EN } from '../../constants/schedule';
 import { setCurrentMills } from '../../features/calendar/calendarSlice';
 import {
+  addRoutine,
+  deleteRoutine,
   addSchedule,
   deleteSchedule,
   Schedule,
@@ -17,28 +20,25 @@ import SimpleButton from '../common/SimpleButton';
 import './TodoInputModal.scss';
 
 interface Props {
-  onClose?: () => void;
-  index?: number;
-  onSubmit?: () => void;
+  onClose: () => void;
   draft: Schedule;
-  // eslint-disable-next-line no-unused-vars
-  setDraft?: (v: any) => void;
-  targetId: string;
-  selectedScheduleIndex: number; // deprecated.
-  isEditMode?: boolean; // deprecated..
+  setDraft: (v: any) => void;
 }
 
-const TodoInputModal: React.FC<Props> = ({
-  onClose,
-  draft,
-  setDraft,
-  targetId,
-}) => {
+const TodoInputModal: React.FC<Props> = ({ onClose, draft, setDraft }) => {
   const dispatch = useAppDispatch();
   const isAddMode = React.useMemo(() => {
-    return targetId === '';
-  }, [targetId]);
+    return draft.id === '';
+  }, [draft]);
   const originDraft = React.useMemo(() => draft, []);
+  const originDay = React.useMemo(
+    () => DAY_NAME_EN[dayjs(draft.date).day()],
+    []
+  );
+  const day = React.useMemo(
+    () => DAY_NAME_EN[dayjs(draft.date).day()],
+    [draft]
+  );
   const handleTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
     setDraft?.((prev: any) => ({
       ...prev,
@@ -47,7 +47,20 @@ const TodoInputModal: React.FC<Props> = ({
   };
 
   const handleDelete = () => {
-    dispatch(deleteSchedule({ date: originDraft.date, id: targetId }));
+    if (draft.type === 'schedule') {
+      dispatch(deleteSchedule({ date: originDraft.date, id: draft.id }));
+    } else {
+      dispatch(deleteRoutine({ day: originDay, id: draft.id }));
+    }
+    onClose?.();
+  };
+  const handleRoutineSubmit = () => {
+    if (isAddMode) {
+      dispatch(addRoutine({ day, data: draft }));
+    } else {
+      dispatch(deleteRoutine({ day: originDay, id: draft.id }));
+      dispatch(addRoutine({ day, data: draft }));
+    }
     onClose?.();
   };
   const handleSubmit = () => {
@@ -62,7 +75,7 @@ const TodoInputModal: React.FC<Props> = ({
       //     index: selectedScheduleIndex,
       //   })
       // );
-      dispatch(deleteSchedule({ date: originDraft.date, id: targetId }));
+      dispatch(deleteSchedule({ date: originDraft.date, id: draft.id }));
       dispatch(addSchedule({ date: draft.date, data: draft }));
     }
     onClose?.();
@@ -93,6 +106,7 @@ const TodoInputModal: React.FC<Props> = ({
   };
 
   React.useEffect(() => {
+    console.log(draft);
     const handleESC = (e: any) => {
       console.log(e.key);
       if (e.key === 'Escape') {
@@ -106,6 +120,12 @@ const TodoInputModal: React.FC<Props> = ({
     };
   }, []);
 
+  const handleRoutine = (e: any) => {
+    setDraft?.((prev: any) => ({
+      ...prev,
+      type: e.target.value,
+    }));
+  };
   return (
     <>
       <div className="Overlay" onClick={onClose} />
@@ -135,10 +155,13 @@ const TodoInputModal: React.FC<Props> = ({
             />
           </div>
           <div className="row">
-            <select>
-              <option>반복 안함</option>
-              <option>매일</option>
-              <option>매주 n요일</option>
+            <select
+              onChange={handleRoutine}
+              value={draft.type}
+              disabled={!isAddMode}
+            >
+              <option value="schedule">반복 안함</option>
+              <option value="routine">매주 n요일</option>
             </select>
           </div>
           <div className="row">
@@ -161,7 +184,12 @@ const TodoInputModal: React.FC<Props> = ({
               Delete
             </SimpleButton>
           )}
-          <SimpleButton theme="primary" onClick={handleSubmit}>
+          <SimpleButton
+            theme="primary"
+            onClick={() =>
+              draft.type === 'schedule' ? handleSubmit() : handleRoutineSubmit()
+            }
+          >
             {isAddMode ? 'Submit' : 'Update'}
           </SimpleButton>
         </div>

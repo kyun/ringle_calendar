@@ -1,27 +1,42 @@
 import dayjs, { Dayjs } from 'dayjs';
 import React from 'react';
 import { useAppSelector } from '../../../app/hooks';
-import { DAY_NAME, TIME_NAME } from '../../../constants/schedule';
+import {
+  COLORS,
+  DAY_NAME,
+  DAY_NAME_EN,
+  TIME_NAME,
+} from '../../../constants/schedule';
 import { getCalendar } from '../../../features/calendar/calendarSlice';
-import { getSchedule } from '../../../features/schedule/scheduleSlice';
+import {
+  getSchedule,
+  Schedule,
+} from '../../../features/schedule/scheduleSlice';
 import Portal from '../../common/Portal';
 import TodoInputModal from '../../modals/TodoInputModal';
 import './MonthlyScheduler.scss';
 import ScheduleListModal from './ScheduleListModal';
 
-const INIT_DRAFT = {
+const INIT_DRAFT: Schedule = {
+  type: 'schedule',
   date: '',
   startAt: 0,
   endAt: 1.5,
   title: '(제목 없음)',
-  background: '#f8d548',
+  background: COLORS[0],
   id: '',
 };
+
 const MonthlyScheduler: React.FC<any> = () => {
   const calendar = useAppSelector(getCalendar);
-  const { schedule } = useAppSelector(getSchedule);
-
-  const [draft, setDraft] = React.useState(INIT_DRAFT);
+  const { schedule, routine, defaultBackground } = useAppSelector(getSchedule);
+  const initDraft = React.useMemo(() => {
+    return {
+      ...INIT_DRAFT,
+      background: defaultBackground,
+    };
+  }, [defaultBackground]);
+  const [draft, setDraft] = React.useState(initDraft);
   const [isInputModalOpen, setIsInputModalOpen] = React.useState(false);
   const [isScheduleListModalOpen, setIsScheduleListModalOpen] =
     React.useState(false);
@@ -30,7 +45,6 @@ const MonthlyScheduler: React.FC<any> = () => {
     dayname: '',
   });
   const [clickedDate, setClickedDate] = React.useState('');
-  const [targetId, setTargetId] = React.useState('');
 
   const today = React.useMemo(() => dayjs(Date.now()), []);
   const selected = React.useMemo(
@@ -68,17 +82,18 @@ const MonthlyScheduler: React.FC<any> = () => {
   React.useEffect(() => {
     generate();
   }, [selected]);
+  React.useEffect(() => {
+    setDraft((prev) => ({ ...prev, background: defaultBackground }));
+  }, [defaultBackground]);
 
   const handleCloseInputModal = () => {
-    setDraft(INIT_DRAFT);
+    setDraft(initDraft);
     setIsInputModalOpen(false);
-    setTargetId('');
   };
   const handleCloseListModal = () => {
     setIsScheduleListModalOpen(false);
   };
   const handleClickDate = (date: string) => (e: any) => {
-    console.log('handle...');
     e.preventDefault();
     e.stopPropagation();
     setDraft((prev) => ({
@@ -87,15 +102,13 @@ const MonthlyScheduler: React.FC<any> = () => {
     }));
     setIsInputModalOpen(true);
   };
-  const handleItemClick = (date: string, id: string) => (e: any) => {
-    console.log('clickckck');
+  const handleItemClick = (el: Schedule) => (e: any) => {
     e.preventDefault();
     e.stopPropagation();
+    console.log(el);
     setDraft((prev) => ({
-      ...prev,
-      date,
+      ...el,
     }));
-    setTargetId(id);
     setIsInputModalOpen(true);
   };
   const handleClickMore =
@@ -110,17 +123,13 @@ const MonthlyScheduler: React.FC<any> = () => {
       });
       setIsScheduleListModalOpen(true);
     };
-  console.log('Monthly');
   return (
     <div className="MonthlyScheduler">
       {isInputModalOpen && (
         <Portal>
           <TodoInputModal
-            targetId=""
-            isEditMode={targetId !== ''}
             draft={draft}
             setDraft={setDraft}
-            selectedScheduleIndex={-1}
             onClose={handleCloseInputModal}
           />
         </Portal>
@@ -150,8 +159,15 @@ const MonthlyScheduler: React.FC<any> = () => {
               const isToday = d.format('YYYYMMDD') === today.format('YYYYMMDD');
               const isPresent = selected.month() === d.month();
               const clone = [...(schedule?.[d.format('YYYY-MM-DD')] ?? [])];
+              const _routine = (routine[DAY_NAME_EN[j]] ?? []).map((data) => ({
+                ...data,
+                date: d.format('YYYY-MM-DD'),
+              }));
               const length = clone.length;
-              const sorted = clone?.sort((a, b) => a.startAt - b.startAt) ?? [];
+              const sorted =
+                [...clone, ..._routine]?.sort(
+                  (a, b) => a.startAt - b.startAt
+                ) ?? [];
               return (
                 <div
                   className={`box ${isToday ? '--today' : ''} ${
@@ -165,7 +181,7 @@ const MonthlyScheduler: React.FC<any> = () => {
                     {/* Draft */}
                     {draft &&
                       draft.date === d.format('YYYY-MM-DD') &&
-                      targetId === '' && (
+                      draft.id === '' && (
                         <div className="schedule-item --draft">
                           {draft.title}, {draft.startAt}-{draft.endAt}
                         </div>
@@ -175,18 +191,19 @@ const MonthlyScheduler: React.FC<any> = () => {
                         <div
                           className="schedule-item"
                           key={index}
-                          onClick={handleItemClick(
-                            d.format('YYYY-MM-DD'),
-                            el.id
-                          )}
+                          onClick={handleItemClick(el)}
                         >
-                          {el.title}, {TIME_NAME[el.startAt * 2]}-
-                          {TIME_NAME[el.endAt * 2]}
+                          <span
+                            className="bullet"
+                            style={{ background: el.background }}
+                          />
+                          <span className="text">
+                            {TIME_NAME[el.startAt * 2]} - {el.title}
+                          </span>
                         </div>
                       );
                     })}
-                    {/* {schedule?.[d.format('YYYY-MM-DD')]?.length > 3 && */}
-                    {true && (
+                    {schedule?.[d.format('YYYY-MM-DD')]?.length > 3 && (
                       <button
                         className="more-button"
                         onClick={handleClickMore({
