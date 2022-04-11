@@ -59,8 +59,11 @@
   - [x] Schedule Redux 연동
   - [ ] 일정 등록 모달 띄우기
   - [ ] 등록된 일정 표시
+  - [ ] 등록된 일정이 3개 이상일 경우, 더보기 버튼 노출
+  - [ ] 더보기 버튼 클릭시, 등록된 일정 표시 팝업
   - [ ] 등록된 반복 일정 표시
   - [ ] 등록된 일정 클릭시 일정 수정 모달 띄우기
+  - [ ] 마우스 스크롤로 달력 이동
   - [ ] Refactoring
 - [ ] InputScheduleModal
   - [x] UI Style
@@ -80,39 +83,5 @@
   - [x] Portal
   - [x] Input
   - [ ] InputPeriod
-#### UI
-
-- [x] Header UI
-- [x] Header Responsible
-- [x] Mini Calendar 
-- [x] Weekly Scheduler
-- [ ] Weekly Scheduler Responsible
-- [x] Monhtly Scheduler
-- [ ] Monthly Scheduler Responsible
-- [x] Todo Input Modal
-- [ ] Monthly Scheduler Floating Schedule List Modal
-
-#### 기능
-- [x] [Redux] Calendar State 정의
-- [ ] [Redux] Scheduler State 정의
-- [x] [Component] Mini Calendar 날짜 변경 기능
-- [x] [Component] Weekly Scheduler 기간 드래그 선택 기능
-- [x] [Component] Weekly Scheduler 등록된 일정 렌더링
-- [x] [Component] Monthly Scheduler 등록된 일정 렌더링
-- [x] [Component] Todo Input Modal 일정 등록 기능
-- [x] [Component] Todo Input Modal 일정 삭제 기능
-- [x] [Component] Todo Input Modal 일정 수정 기능
-- [ ] [Component] Todo Input Modal 반복 일정 등록 기능
-- [ ] [Component] Scheduler 공통 반복 일정 렌더링
-
-
-#### 여유가 있다면 개발할 기능
-- [ ] [Component] 중첩 일정 UI 표시
-> Scheduler State의 구조를 다시 고민해봐야함.
-
-- [x] [Component] ESC키로 Todo Input Modal 닫기 
-- [ ] [Component] 마우스 스크롤로 Monthly Scheduler 월 변경
-
-
 #### 버그
 - [ ] [Component] Weekly Scheduler 기간 드래그시 좌측 미니캘린더쪽으로 이동 시 일정 박스 사라지지 않음
