@@ -52,6 +52,7 @@
   - [x] 등록된 일정 클릭시 일정 수정 모달 띄우기
   - [ ] 등록된 반복 일정 표시
   - [x] 기간이 겹치는 일정 UI 처리 (깊은 고민이 필요)
+  - [ ] Delete 키로 일정 삭제
   - [ ] Refactoring
 - [ ] Monthly Scheduler
   - [ ] UI 개발

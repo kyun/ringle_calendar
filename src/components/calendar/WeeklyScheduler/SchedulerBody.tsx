@@ -45,7 +45,7 @@ const INIT_DRAFT = {
   startAt: 0,
   endAt: 0,
   title: '(제목 없음)',
-  background: '#FECA00',
+  background: '#f8d548',
   id: '',
 };
 const SchedulerBody: React.FC<Props> = ({ days, now }) => {
@@ -53,8 +53,9 @@ const SchedulerBody: React.FC<Props> = ({ days, now }) => {
   const bodyRef = React.useRef<HTMLDivElement>(null);
   const resizableDivRefs = React.useRef<HTMLDivElement[]>([]);
   const [isInputModalOpen, setIsInputModalOpen] = React.useState(false);
+  const [targetId, setTargetId] = React.useState('');
   const [selectedScheduleInfo, setSelectedScheduleInfo] = React.useState({
-    index: -1,
+    targetId: '',
     date: '',
   });
   const [draft, setDraft] = React.useState(INIT_DRAFT);
@@ -143,7 +144,7 @@ const SchedulerBody: React.FC<Props> = ({ days, now }) => {
   const handleInputModalClose = () => {
     setIsInputModalOpen(false);
     setSelectedScheduleInfo({
-      index: -1,
+      targetId: '',
       date: '',
     });
     setDraft(INIT_DRAFT);
@@ -154,12 +155,12 @@ const SchedulerBody: React.FC<Props> = ({ days, now }) => {
     e.preventDefault();
   };
 
-  const handleScheduleClick = (el: Schedule, index: number) => {
+  const handleScheduleClick = (el: Schedule, id: string) => {
     let _date = el.date === '' ? now.format('YYYY-MM-DD') : el.date;
     setIsInputModalOpen(true);
     setDraft({ ...el, date: _date });
     setSelectedScheduleInfo({
-      index,
+      targetId: id,
       date: el.date,
     });
   };
@@ -172,8 +173,8 @@ const SchedulerBody: React.FC<Props> = ({ days, now }) => {
             draft={draft}
             setDraft={setDraft}
             onClose={handleInputModalClose}
-            selectedScheduleIndex={selectedScheduleInfo.index}
-            targetId=""
+            selectedScheduleIndex={-1}
+            targetId={selectedScheduleInfo.targetId}
           />
         </Portal>
       )}
@@ -235,7 +236,7 @@ const SchedulerBody: React.FC<Props> = ({ days, now }) => {
               return (
                 <div
                   className={`saved-schedule ${
-                    selectedScheduleInfo.index === index &&
+                    selectedScheduleInfo.targetId === el.id &&
                     selectedScheduleInfo.date === day.format('YYYY-MM-DD')
                       ? '--hidden'
                       : ''
@@ -248,7 +249,7 @@ const SchedulerBody: React.FC<Props> = ({ days, now }) => {
                   onMouseDown={disableMouseEvent}
                   // onMouseMove={disableMouseEvent}
                   // onMouseUp={disableMouseEvent}
-                  onClick={() => handleScheduleClick(el, index)}
+                  onClick={() => handleScheduleClick(el, el.id)}
                 >
                   <span className="title">{el.title}</span>
                   <span className="period">
@@ -263,7 +264,7 @@ const SchedulerBody: React.FC<Props> = ({ days, now }) => {
               return (
                 <div
                   className={`saved-schedule ${
-                    selectedScheduleInfo.index === index &&
+                    selectedScheduleInfo.targetId === el.id &&
                     selectedScheduleInfo.date === day.format('YYYY-MM-DD')
                       ? '--hidden'
                       : ''
@@ -273,7 +274,7 @@ const SchedulerBody: React.FC<Props> = ({ days, now }) => {
                   onMouseDown={disableMouseEvent}
                   onMouseMove={disableMouseEvent}
                   onMouseUp={disableMouseEvent}
-                  onClick={() => handleScheduleClick(el, index)}
+                  onClick={() => handleScheduleClick(el, el.id)}
                 >
                   <span className="title">{el.title}</span>
                   <span className="period">

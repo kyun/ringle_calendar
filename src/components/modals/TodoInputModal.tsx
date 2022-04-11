@@ -35,13 +35,11 @@ const TodoInputModal: React.FC<Props> = ({
   draft,
   setDraft,
   targetId,
-  selectedScheduleIndex,
-  isEditMode,
 }) => {
   const dispatch = useAppDispatch();
   const isAddMode = React.useMemo(() => {
-    return selectedScheduleIndex === -1 && !isEditMode;
-  }, [selectedScheduleIndex, isEditMode]);
+    return targetId === '';
+  }, [targetId]);
   const originDraft = React.useMemo(() => draft, []);
   const handleTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
     setDraft?.((prev: any) => ({

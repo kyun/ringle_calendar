@@ -1,6 +1,6 @@
 import dayjs, { Dayjs } from 'dayjs';
 import React from 'react';
-import { useAppDispatch, useAppSelector } from '../../../app/hooks';
+import { useAppSelector } from '../../../app/hooks';
 import { selectCalendar } from '../../../features/calendar/calendarSlice';
 
 import SchedulerBody from './SchedulerBody';

@@ -2,15 +2,8 @@ import dayjs, { Dayjs } from 'dayjs';
 import React from 'react';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import { DAY_NAME, TIME_NAME } from '../../../constants/schedule';
-import {
-  nextMonth,
-  prevMonth,
-  selectCalendar,
-} from '../../../features/calendar/calendarSlice';
-import {
-  getSchedule,
-  Schedule,
-} from '../../../features/schedule/scheduleSlice';
+import { selectCalendar } from '../../../features/calendar/calendarSlice';
+import { getSchedule } from '../../../features/schedule/scheduleSlice';
 import Portal from '../../common/Portal';
 import TodoInputModal from '../../modals/TodoInputModal';
 import './MonthlyScheduler.scss';
@@ -21,7 +14,7 @@ const INIT_DRAFT = {
   startAt: 0,
   endAt: 1.5,
   title: '(제목 없음)',
-  background: '#FECA00',
+  background: '#f8d548',
   id: '',
 };
 const MonthlyScheduler: React.FC<any> = () => {
@@ -33,6 +26,10 @@ const MonthlyScheduler: React.FC<any> = () => {
   const [isInputModalOpen, setIsInputModalOpen] = React.useState(false);
   const [isScheduleListModalOpen, setIsScheduleListModalOpen] =
     React.useState(false);
+  const [selectedDateInfo, setSelectedDateInfo] = React.useState({
+    date: '',
+    dayname: '',
+  });
   const [clickedDate, setClickedDate] = React.useState('');
   const [targetId, setTargetId] = React.useState('');
 
@@ -78,6 +75,9 @@ const MonthlyScheduler: React.FC<any> = () => {
     setIsInputModalOpen(false);
     setTargetId('');
   };
+  const handleCloseListModal = () => {
+    setIsScheduleListModalOpen(false);
+  };
   const handleClickDate = (date: string) => (e: any) => {
     console.log('handle...');
     e.preventDefault();
@@ -99,12 +99,18 @@ const MonthlyScheduler: React.FC<any> = () => {
     setTargetId(id);
     setIsInputModalOpen(true);
   };
-  const handleClickMore = (date: string) => (e: any) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setClickedDate(date);
-    setIsScheduleListModalOpen(true);
-  };
+  const handleClickMore =
+    ({ dayname, date }: any) =>
+    (e: any) => {
+      e.preventDefault();
+      e.stopPropagation();
+      setClickedDate(date);
+      setSelectedDateInfo({
+        date,
+        dayname,
+      });
+      setIsScheduleListModalOpen(true);
+    };
   console.log('Monthly');
   return (
     <div className="MonthlyScheduler">
@@ -122,7 +128,11 @@ const MonthlyScheduler: React.FC<any> = () => {
       )}
       {isScheduleListModalOpen && (
         <Portal>
-          <ScheduleListModal list={schedule[clickedDate]} />
+          <ScheduleListModal
+            onClose={handleCloseListModal}
+            selectedDateInfo={selectedDateInfo}
+            list={schedule[clickedDate]}
+          />
         </Portal>
       )}
       <div className="row --fixed">
@@ -176,10 +186,14 @@ const MonthlyScheduler: React.FC<any> = () => {
                         </div>
                       );
                     })}
-                    {schedule?.[d.format('YYYY-MM-DD')]?.length > 3 && (
+                    {/* {schedule?.[d.format('YYYY-MM-DD')]?.length > 3 && */}
+                    {true && (
                       <button
                         className="more-button"
-                        onClick={handleClickMore(d.format('YYYY-MM-DD'))}
+                        onClick={handleClickMore({
+                          date: d.format('YYYY-MM-DD'),
+                          dayname: DAY_NAME[j],
+                        })}
                       >
                         {length - 3}개 더보기
                       </button>
