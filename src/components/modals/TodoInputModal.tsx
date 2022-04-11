@@ -3,7 +3,7 @@ import dayjs from 'dayjs';
 import React from 'react';
 import { MdClose } from 'react-icons/md';
 import { useAppDispatch } from '../../app/hooks';
-import { COLORS, DAY_NAME_EN } from '../../constants/schedule';
+import { COLORS, DAY_NAME, DAY_NAME_EN } from '../../constants/schedule';
 import { setCurrentMills } from '../../features/calendar/calendarSlice';
 import {
   addRoutine,
@@ -12,6 +12,7 @@ import {
   deleteSchedule,
   Schedule,
 } from '../../features/schedule/scheduleSlice';
+import ColorBox from '../common/ColorBox';
 import IconButton from '../common/IconButton';
 import Input from '../common/Input';
 import InputPeriod from '../common/Input/InputPeriod';
@@ -27,6 +28,7 @@ interface Props {
 
 const TodoInputModal: React.FC<Props> = ({ onClose, draft, setDraft }) => {
   const dispatch = useAppDispatch();
+
   const isAddMode = React.useMemo(() => {
     return draft.id === '';
   }, [draft]);
@@ -39,6 +41,7 @@ const TodoInputModal: React.FC<Props> = ({ onClose, draft, setDraft }) => {
     () => DAY_NAME_EN[dayjs(draft.date).day()],
     [draft]
   );
+  const background = React.useMemo(() => draft.background, [draft]);
   const handleTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
     setDraft?.((prev: any) => ({
       ...prev,
@@ -126,6 +129,12 @@ const TodoInputModal: React.FC<Props> = ({ onClose, draft, setDraft }) => {
       type: e.target.value,
     }));
   };
+  const handleColor = (color: string) => {
+    setDraft?.((prev: any) => ({
+      ...prev,
+      background: color,
+    }));
+  };
   return (
     <>
       <div className="Overlay" onClick={onClose} />
@@ -156,23 +165,25 @@ const TodoInputModal: React.FC<Props> = ({ onClose, draft, setDraft }) => {
           </div>
           <div className="row">
             <select
+              className="plain-select"
               onChange={handleRoutine}
               value={draft.type}
               disabled={!isAddMode}
             >
               <option value="schedule">반복 안함</option>
-              <option value="routine">매주 n요일</option>
+              <option value="routine">
+                매주 {DAY_NAME[dayjs(draft.date).day()]}요일
+              </option>
             </select>
           </div>
           <div className="row">
-            {COLORS.map((color, index) => {
-              return (
-                <div
-                  key={index}
-                  style={{ background: color, width: 20, height: 20 }}
-                />
-              );
-            })}
+            <ColorBox
+              colors={COLORS}
+              value={background}
+              onChange={handleColor}
+            />
+          </div>
+          <div className="row">
             <p style={{ fontSize: 12, color: '#4b4b4b' }}>
               ESC로도 닫을 수 있습니다.
             </p>

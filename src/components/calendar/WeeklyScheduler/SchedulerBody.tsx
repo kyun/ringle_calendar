@@ -197,6 +197,7 @@ const SchedulerBody: React.FC<Props> = ({ days, now }) => {
       </div>
       {days.map((day, index) => {
         const clone = day.clone();
+        console.log(now.hour());
         const isPast = clone.add(24, 'hour').unix() < now.unix();
         const isToday = day.format('YYYYMMDD') === now.format('YYYYMMDD');
         const _routine = (routine[DAY_NAME_EN[index]] ?? []).map((data) => ({

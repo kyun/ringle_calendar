@@ -183,7 +183,13 @@ const MonthlyScheduler: React.FC<any> = () => {
                       draft.date === d.format('YYYY-MM-DD') &&
                       draft.id === '' && (
                         <div className="schedule-item --draft">
-                          {draft.title}, {draft.startAt}-{draft.endAt}
+                          <span
+                            className="bullet"
+                            style={{ background: draft.background }}
+                          />
+                          <span className="text">
+                            {TIME_NAME[draft.startAt * 2]} - {draft.title}
+                          </span>
                         </div>
                       )}
                     {sorted?.slice(0, 3)?.map((el, index) => {
