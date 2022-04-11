@@ -51,15 +51,15 @@
   - [x] 등록된 일정 표시
   - [x] 등록된 일정 클릭시 일정 수정 모달 띄우기
   - [ ] 등록된 반복 일정 표시
-  - [ ] 기간이 겹치는 일정 UI 처리 (깊은 고민이 필요)
+  - [x] 기간이 겹치는 일정 UI 처리 (깊은 고민이 필요)
   - [ ] Refactoring
 - [ ] Monthly Scheduler
   - [ ] UI 개발
   - [ ] 반응형
-  - [ ] Monthly Calendar Generate
+  - [x] Monthly Calendar Generate
   - [x] Calendar Redux 연동
   - [x] Schedule Redux 연동
-  - [ ] 일정 등록 모달 띄우기
+  - [x] 일정 등록 모달 띄우기
   - [ ] 등록된 일정 표시
   - [ ] 등록된 일정이 3개 이상일 경우, 더보기 버튼 노출
   - [ ] 더보기 버튼 클릭시, 등록된 일정 표시 팝업

@@ -13,7 +13,7 @@ import {
   getSchedule,
   Schedule,
 } from '../../../features/schedule/scheduleSlice';
-import { generateStyle } from '../../../utils/schedule';
+import { deduplicator, generateStyle } from '../../../utils/schedule';
 import Portal from '../../common/Portal';
 import TodoInputModal from '../../modals/TodoInputModal';
 import './SchedulerBody.scss';
@@ -46,6 +46,7 @@ const INIT_DRAFT = {
   endAt: 0,
   title: '(제목 없음)',
   background: '#FECA00',
+  id: '',
 };
 const SchedulerBody: React.FC<Props> = ({ days, now }) => {
   const { schedule, routine } = useAppSelector(getSchedule);
@@ -101,6 +102,7 @@ const SchedulerBody: React.FC<Props> = ({ days, now }) => {
       (Math.floor(clientY / HALF_HOUR_HEIGHT) * HALF_HOUR_HEIGHT) /
         HOUR_HEIGHT +
       0.5;
+
     const { top, height } = generateStyle(pos.startAt, pos.endAt);
 
     resizableDivRefs.current[index].style.top = `${top}px`;
@@ -111,6 +113,11 @@ const SchedulerBody: React.FC<Props> = ({ days, now }) => {
     disableMouseEvent(e);
 
     if (!bodyRef.current) return;
+    if (pos.startAt > pos.endAt) {
+      let temp = pos.startAt;
+      pos.startAt = pos.endAt;
+      pos.endAt = temp;
+    }
     const { index, startAt, endAt } = pos;
     document.body.style.cursor = 'unset';
     if (resizableDivRefs.current[index]) {
@@ -156,6 +163,7 @@ const SchedulerBody: React.FC<Props> = ({ days, now }) => {
       date: el.date,
     });
   };
+
   return (
     <div className="SchedulerBody" ref={bodyRef}>
       {isInputModalOpen && (
@@ -177,6 +185,12 @@ const SchedulerBody: React.FC<Props> = ({ days, now }) => {
       </div>
       {days.map((day, index) => {
         const isToday = day.format('YYYYMMDD') === now.format('YYYYMMDD');
+        const sorted = [...(schedule?.[day.format('YYYY-MM-DD')] ?? [])]
+          ?.sort((a, b) => a.startAt - b.startAt)
+          ?.map((el) => {
+            return [el.startAt, el.endAt];
+          });
+        const position = deduplicator(sorted);
         return (
           <div
             className="day-column"
@@ -225,7 +239,10 @@ const SchedulerBody: React.FC<Props> = ({ days, now }) => {
                       ? '--hidden'
                       : ''
                   }`}
-                  style={generateStyle(el.startAt, el.endAt)}
+                  style={{
+                    ...generateStyle(el.startAt, el.endAt),
+                    ...position[index],
+                  }}
                   key={index}
                   onMouseDown={disableMouseEvent}
                   // onMouseMove={disableMouseEvent}

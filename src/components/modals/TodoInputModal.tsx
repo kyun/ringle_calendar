@@ -2,6 +2,7 @@ import dayjs from 'dayjs';
 import React from 'react';
 import { MdClose, MdDelete } from 'react-icons/md';
 import { useAppDispatch } from '../../app/hooks';
+import { COLORS } from '../../constants/schedule';
 import { selectDate } from '../../features/calendar/calendarSlice';
 import {
   addSchedule,
@@ -22,7 +23,9 @@ interface Props {
   onSubmit?: () => void;
   draft: Schedule;
   setDraft?: (v: any) => void;
-  selectedScheduleIndex: number;
+  targetId?: string;
+  selectedScheduleIndex: number; // deprecated.
+  isEditMode?: boolean; // deprecated..
 }
 
 const TodoInputModal: React.FC<Props> = ({
@@ -31,12 +34,14 @@ const TodoInputModal: React.FC<Props> = ({
   onSubmit,
   draft,
   setDraft,
+  targetId,
   selectedScheduleIndex,
+  isEditMode,
 }) => {
   const dispatch = useAppDispatch();
   const isAddMode = React.useMemo(() => {
-    return selectedScheduleIndex === -1;
-  }, [selectedScheduleIndex]);
+    return selectedScheduleIndex === -1 && !isEditMode;
+  }, [selectedScheduleIndex, isEditMode]);
   const originDraft = React.useMemo(() => draft, []);
   const handleTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
     setDraft?.((prev: any) => ({
@@ -55,7 +60,7 @@ const TodoInputModal: React.FC<Props> = ({
     if (isAddMode) {
       dispatch(addSchedule({ date: draft.date, data: draft }));
     } else {
-      // update를 못 쓰는 이유,, 날짜 변경시 현재 데이터 구조에서 업데이트 불가
+      // update를 못 쓰는 이유,, 날짜 변경시 현재 데이터 구조에서 업데이트 불가 Date를 key로 하는 해쉬맵구조라서.
       // dispatch(
       //   updateSchedule({
       //     date: draft.date,
@@ -145,6 +150,14 @@ const TodoInputModal: React.FC<Props> = ({
             </select>
           </div>
           <div className="row">
+            {COLORS.map((color, index) => {
+              return (
+                <div
+                  key={index}
+                  style={{ background: color, width: 20, height: 20 }}
+                />
+              );
+            })}
             <p style={{ fontSize: 12, color: '#4b4b4b' }}>
               ESC로도 닫을 수 있습니다.
             </p>

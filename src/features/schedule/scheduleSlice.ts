@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { v4 as uuidv4 } from 'uuid';
 
 import { RootState, AppThunk } from '../../app/store';
 import React from 'react';
@@ -10,6 +11,7 @@ export interface Schedule {
   endAt: number;
   date: string;
   background: string;
+  id: string;
 }
 export interface ScheduleState {
   schedule: {
@@ -28,6 +30,7 @@ const initialState: ScheduleState = {
         endAt: 0.5,
         title: '(SAMPLE)',
         background: '#FECA00',
+        id: uuidv4(),
       },
     ],
   },
@@ -77,9 +80,12 @@ export const scheduleSlice = createSlice({
       const { date, data } = action.payload;
 
       if (state.schedule?.[date]) {
-        state.schedule[date] = state.schedule[date].concat(data);
+        state.schedule[date] = state.schedule[date].concat({
+          ...data,
+          id: uuidv4(),
+        });
       } else {
-        state.schedule[date] = [data];
+        state.schedule[date] = [{ ...data, id: uuidv4() }];
       }
     },
     updateSchedule: (
