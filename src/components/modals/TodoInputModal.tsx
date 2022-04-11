@@ -23,7 +23,7 @@ interface Props {
   onSubmit?: () => void;
   draft: Schedule;
   setDraft?: (v: any) => void;
-  targetId?: string;
+  targetId: string;
   selectedScheduleIndex: number; // deprecated.
   isEditMode?: boolean; // deprecated..
 }
@@ -51,9 +51,7 @@ const TodoInputModal: React.FC<Props> = ({
   };
 
   const handleDelete = () => {
-    dispatch(
-      deleteSchedule({ date: originDraft.date, index: selectedScheduleIndex })
-    );
+    dispatch(deleteSchedule({ date: originDraft.date, id: targetId }));
     onClose?.();
   };
   const handleSubmit = () => {
@@ -68,9 +66,7 @@ const TodoInputModal: React.FC<Props> = ({
       //     index: selectedScheduleIndex,
       //   })
       // );
-      dispatch(
-        deleteSchedule({ date: originDraft.date, index: selectedScheduleIndex })
-      );
+      dispatch(deleteSchedule({ date: originDraft.date, id: targetId }));
       dispatch(addSchedule({ date: draft.date, data: draft }));
     }
     onClose?.();

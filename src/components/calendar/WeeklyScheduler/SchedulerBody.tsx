@@ -173,6 +173,7 @@ const SchedulerBody: React.FC<Props> = ({ days, now }) => {
             setDraft={setDraft}
             onClose={handleInputModalClose}
             selectedScheduleIndex={selectedScheduleInfo.index}
+            targetId=""
           />
         </Portal>
       )}

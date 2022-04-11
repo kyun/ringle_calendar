@@ -61,7 +61,6 @@ function deduplicator(sortedArray: Array<Array<number>>) {
         left: (1 / a.length) * 100 * i + '%',
       };
     });
-    console.log(maped);
     out = [...out, ...maped];
   });
   return out;

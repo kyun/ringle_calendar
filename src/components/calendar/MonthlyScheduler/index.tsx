@@ -111,6 +111,7 @@ const MonthlyScheduler: React.FC<any> = () => {
       {isInputModalOpen && (
         <Portal>
           <TodoInputModal
+            targetId=""
             isEditMode={targetId !== ''}
             draft={draft}
             setDraft={setDraft}

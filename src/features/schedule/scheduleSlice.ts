@@ -80,10 +80,13 @@ export const scheduleSlice = createSlice({
       const { date, data } = action.payload;
 
       if (state.schedule?.[date]) {
-        state.schedule[date] = state.schedule[date].concat({
-          ...data,
-          id: uuidv4(),
-        });
+        const clone = state.schedule[date].concat({ ...data, id: uuidv4() });
+        const sorted = clone.sort((a, b) => a.startAt - b.startAt);
+        state.schedule[date] = sorted;
+        // state.schedule[date] = state.schedule[date].concat({
+        //   ...data,
+        //   id: uuidv4(),
+        // });
       } else {
         state.schedule[date] = [{ ...data, id: uuidv4() }];
       }
@@ -103,12 +106,12 @@ export const scheduleSlice = createSlice({
     },
     deleteSchedule: (
       state,
-      action: PayloadAction<{ date: string; index: number }>
+      action: PayloadAction<{ date: string; id: string }>
     ) => {
       //
-      const { date, index } = action.payload;
-      state.schedule[date] = state.schedule[date].filter((el, i) => {
-        return i !== index;
+      const { date, id } = action.payload;
+      state.schedule[date] = state.schedule[date].filter((el) => {
+        return el.id !== id;
       });
     },
   },
