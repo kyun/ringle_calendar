@@ -4,8 +4,8 @@ import './MiniCalendar.scss';
 import { MdOutlineChevronLeft, MdOutlineChevronRight } from 'react-icons/md';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import {
-  selectCalendar,
-  selectDate,
+  getCalendar,
+  setCurrentMills,
 } from '../../../features/calendar/calendarSlice';
 import dayjs, { Dayjs } from 'dayjs';
 import weekOfYear from 'dayjs/plugin/weekOfYear';
@@ -14,7 +14,7 @@ import { DAY_NAME } from '../../../constants/schedule';
 dayjs.extend(weekOfYear);
 
 const MiniCalendar: React.FC<any> = () => {
-  const calendar = useAppSelector(selectCalendar);
+  const calendar = useAppSelector(getCalendar);
   const dispatch = useAppDispatch();
   const today = React.useMemo(() => dayjs(Date.now()), []);
   const [selected, setSelected] = React.useState(dayjs(Date.now()));
@@ -24,7 +24,7 @@ const MiniCalendar: React.FC<any> = () => {
     const endDay = selected.endOf('month').endOf('week');
     const startWeek = startDay.week();
     const endWeek = endDay.week() === 1 ? 53 : endDay.week();
-    const calendar: Dayjs[][] = [];
+    const _calendar: Dayjs[][] = [];
     const bonusWeek = Array(7)
       .fill(0)
       .map((_, idx) => {
@@ -32,7 +32,7 @@ const MiniCalendar: React.FC<any> = () => {
       });
 
     for (let week = startWeek; week <= endWeek; week++) {
-      calendar.push(
+      _calendar.push(
         Array(7)
           .fill(0)
           .map((_, idx) => {
@@ -40,10 +40,10 @@ const MiniCalendar: React.FC<any> = () => {
           })
       );
     }
-    if (calendar.length < 6) {
-      calendar.push(bonusWeek);
+    if (_calendar.length < 6) {
+      _calendar.push(bonusWeek);
     }
-    setRows(calendar);
+    setRows(_calendar);
   };
 
   const handlePrevious = () => {
@@ -58,7 +58,7 @@ const MiniCalendar: React.FC<any> = () => {
   };
   const handleDate = (d: Dayjs) => {
     setSelected(d);
-    dispatch(selectDate(d.unix() * 1000));
+    dispatch(setCurrentMills(d.unix() * 1000));
   };
 
   React.useEffect(() => {
@@ -66,8 +66,8 @@ const MiniCalendar: React.FC<any> = () => {
   }, [selected]);
 
   React.useEffect(() => {
-    setSelected(dayjs(calendar.selected));
-  }, [calendar.selected]);
+    setSelected(dayjs(calendar.currentMills));
+  }, [calendar.currentMills]);
 
   return (
     <div className="MiniCalendar">
@@ -101,7 +101,7 @@ const MiniCalendar: React.FC<any> = () => {
                 const isThisMonth = selected.month() === d.month();
                 const isSelected =
                   d.format('YYYYMMDD') ===
-                  dayjs(calendar.selected).format('YYYYMMDD');
+                  dayjs(calendar.currentMills).format('YYYYMMDD');
                 return (
                   <span
                     key={j}

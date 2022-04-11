@@ -2,7 +2,7 @@ import dayjs, { Dayjs } from 'dayjs';
 import React from 'react';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import { DAY_NAME, TIME_NAME } from '../../../constants/schedule';
-import { selectCalendar } from '../../../features/calendar/calendarSlice';
+import { getCalendar } from '../../../features/calendar/calendarSlice';
 import { getSchedule } from '../../../features/schedule/scheduleSlice';
 import Portal from '../../common/Portal';
 import TodoInputModal from '../../modals/TodoInputModal';
@@ -18,10 +18,9 @@ const INIT_DRAFT = {
   id: '',
 };
 const MonthlyScheduler: React.FC<any> = () => {
-  const calendar = useAppSelector(selectCalendar);
+  const calendar = useAppSelector(getCalendar);
   const { schedule } = useAppSelector(getSchedule);
 
-  const dispatch = useAppDispatch();
   const [draft, setDraft] = React.useState(INIT_DRAFT);
   const [isInputModalOpen, setIsInputModalOpen] = React.useState(false);
   const [isScheduleListModalOpen, setIsScheduleListModalOpen] =
@@ -35,8 +34,8 @@ const MonthlyScheduler: React.FC<any> = () => {
 
   const today = React.useMemo(() => dayjs(Date.now()), []);
   const selected = React.useMemo(
-    () => dayjs(calendar.selected),
-    [calendar.selected]
+    () => dayjs(calendar.currentMills),
+    [calendar.currentMills]
   );
   const [rows, setRows] = React.useState<Dayjs[][]>([[]]);
   const generate = () => {

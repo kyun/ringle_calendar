@@ -19,31 +19,36 @@ import {
   nextWeek,
   prevMonth,
   prevWeek,
-  selectCalendar,
+  getCalendar,
   selectToday,
+  setViewMode,
 } from '../../../features/calendar/calendarSlice';
 import dayjs from 'dayjs';
 
 const Header: React.FC<any> = () => {
-  const calendar = useAppSelector(selectCalendar);
-  const [isWeek, setIsWeek] = React.useState(true);
+  const calendar = useAppSelector(getCalendar);
   const dispatch = useAppDispatch();
 
+  const handleToday = () => {
+    dispatch(selectToday());
+  };
   const handlePrevious = () => {
-    if (isWeek) {
+    if (calendar.viewMode === 'weekly') {
       dispatch(prevWeek());
     } else {
       dispatch(prevMonth());
     }
   };
   const handleNext = () => {
-    if (isWeek) {
+    if (calendar.viewMode === 'weekly') {
       dispatch(nextWeek());
     } else {
       dispatch(nextMonth());
     }
   };
-
+  const handleSwitchChange = (viewMode: string) => {
+    dispatch(setViewMode(viewMode as 'weekly' | 'monthly'));
+  };
   return (
     <header>
       <div className="leftbox">
@@ -58,7 +63,7 @@ const Header: React.FC<any> = () => {
       <div className="centerbox">
         <div className="datebox">
           <SimpleButton
-            onClick={() => dispatch(selectToday())}
+            onClick={handleToday}
             theme="border"
             style={{ padding: '0 12px', marginRight: 16 }}
           >
@@ -71,7 +76,7 @@ const Header: React.FC<any> = () => {
             <MdOutlineChevronRight />
           </IconButton>
           <span className="title">
-            {dayjs(calendar.selected).format('YYYY년 MM월')}
+            {dayjs(calendar.currentMills).format('YYYY년 MM월')}
           </span>
         </div>
         <div className="toolbox">
@@ -85,9 +90,10 @@ const Header: React.FC<any> = () => {
             <MdOutlineSettings />
           </IconButton>
           <SwitchButton
-            value={isWeek}
-            onChange={setIsWeek}
+            id={['weekly', 'monthly']}
+            value={calendar.viewMode === 'weekly'}
             style={{ marginLeft: 16 }}
+            onChange={handleSwitchChange}
           />
         </div>
       </div>

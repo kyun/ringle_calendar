@@ -1,14 +1,13 @@
 import dayjs from 'dayjs';
 import React from 'react';
-import { MdClose, MdDelete } from 'react-icons/md';
+import { MdClose } from 'react-icons/md';
 import { useAppDispatch } from '../../app/hooks';
 import { COLORS } from '../../constants/schedule';
-import { selectDate } from '../../features/calendar/calendarSlice';
+import { setCurrentMills } from '../../features/calendar/calendarSlice';
 import {
   addSchedule,
   deleteSchedule,
   Schedule,
-  updateSchedule,
 } from '../../features/schedule/scheduleSlice';
 import IconButton from '../common/IconButton';
 import Input from '../common/Input';
@@ -22,6 +21,7 @@ interface Props {
   index?: number;
   onSubmit?: () => void;
   draft: Schedule;
+  // eslint-disable-next-line no-unused-vars
   setDraft?: (v: any) => void;
   targetId: string;
   selectedScheduleIndex: number; // deprecated.
@@ -29,9 +29,7 @@ interface Props {
 }
 
 const TodoInputModal: React.FC<Props> = ({
-  children,
   onClose,
-  onSubmit,
   draft,
   setDraft,
   targetId,
@@ -87,7 +85,7 @@ const TodoInputModal: React.FC<Props> = ({
     console.log(e.target.value);
     console.log(dayjs(e.target.value).unix() * 1000);
     const targetMills = dayjs(e.target.value).unix() * 1000;
-    dispatch(selectDate(targetMills));
+    dispatch(setCurrentMills(targetMills));
     setDraft?.((prev: any) => ({
       ...prev,
       date: e.target.value,

@@ -1,4 +1,4 @@
-import dayjs, { Dayjs } from 'dayjs';
+import { Dayjs } from 'dayjs';
 import React from 'react';
 import { useAppSelector } from '../../../app/hooks';
 import {
@@ -53,7 +53,6 @@ const SchedulerBody: React.FC<Props> = ({ days, now }) => {
   const bodyRef = React.useRef<HTMLDivElement>(null);
   const resizableDivRefs = React.useRef<HTMLDivElement[]>([]);
   const [isInputModalOpen, setIsInputModalOpen] = React.useState(false);
-  const [targetId, setTargetId] = React.useState('');
   const [selectedScheduleInfo, setSelectedScheduleInfo] = React.useState({
     targetId: '',
     date: '',

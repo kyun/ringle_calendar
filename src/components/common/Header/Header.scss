@@ -13,8 +13,7 @@ header{
     box-sizing: border-box;
     @include mobile {
       display: none;
-}
-
+    }
   }
   & > .centerbox {
     display: flex;

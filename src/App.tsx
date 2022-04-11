@@ -4,13 +4,13 @@ import Header from './components/common/Header';
 import MiniCalendar from './components/calendar/MiniCalendar';
 import WeeklyScheduler from './components/calendar/WeeklyScheduler/index2';
 import { useAppSelector } from './app/hooks';
-import { selectCalendar } from './features/calendar/calendarSlice';
+import { getCalendar } from './features/calendar/calendarSlice';
 import MonthlyScheduler from './components/calendar/MonthlyScheduler';
 import IconButton from './components/common/IconButton';
 import { Md10K, Md360, MdRadar, MdSafetyDivider } from 'react-icons/md';
 
 function App() {
-  const calendar = useAppSelector(selectCalendar);
+  const calendar = useAppSelector(getCalendar);
 
   return (
     <div className="App">

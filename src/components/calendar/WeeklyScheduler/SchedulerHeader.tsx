@@ -1,12 +1,9 @@
-import dayjs, { Dayjs } from 'dayjs';
+import { Dayjs } from 'dayjs';
 import React from 'react';
-import { useAppSelector } from '../../../app/hooks';
 import { DAY_NAME } from '../../../constants/schedule';
-import { selectCalendar } from '../../../features/calendar/calendarSlice';
 import './SchedulerHeader.scss';
 
 interface Props {
-  //
   days: Dayjs[];
   now: Dayjs;
 }

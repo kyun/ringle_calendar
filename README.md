@@ -27,7 +27,7 @@
 - [x] Header 
   - [x] UI 개발
   - [x] 반응형
-  - [ ] Refactoring
+  - [x] Refactoring
 - [x] Layout
   - [x] UI 개발
   - [x] 반응형
@@ -82,7 +82,7 @@
 - [ ] Reusable Components (비지니스 로직이 없음)
   - [x] SimpleButton
   - [x] IconButton
-  - [ ] SwitchButton
+  - [x] SwitchButton
   - [x] Portal
   - [x] Input
   - [ ] InputPeriod

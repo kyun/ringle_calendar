@@ -1,23 +1,23 @@
 import dayjs, { Dayjs } from 'dayjs';
 import React from 'react';
 import { useAppSelector } from '../../../app/hooks';
-import { selectCalendar } from '../../../features/calendar/calendarSlice';
+import { getCalendar } from '../../../features/calendar/calendarSlice';
 
 import SchedulerBody from './SchedulerBody';
 import SchedulerHeader from './SchedulerHeader';
 import './WeeklyScheduler.scss';
 
 const WeeklyScheduler: React.FC<any> = () => {
-  const calendar = useAppSelector(selectCalendar);
+  const calendar = useAppSelector(getCalendar);
   const [days, setDays] = React.useState<Dayjs[]>([]);
   const now = React.useMemo(() => dayjs(Date.now()), []);
   React.useEffect(() => {
-    const startOfWeek = dayjs(calendar.selected).startOf('week');
+    const startOfWeek = dayjs(calendar.currentMills).startOf('week');
     const tw = Array(7)
       .fill(0)
       .map((_, idx) => startOfWeek.add(idx, 'day'));
     setDays(tw);
-  }, [calendar.selected]);
+  }, [calendar.currentMills]);
   return (
     <div className="WeeklyScheduler">
       <SchedulerHeader days={days} now={now} />
