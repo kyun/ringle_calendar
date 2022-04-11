@@ -15,6 +15,9 @@ export interface ScheduleState {
   schedule: {
     [date: string]: Schedule[];
   };
+  routine: {
+    [day: string]: Schedule[];
+  };
   status: 'idle' | 'loading' | 'failed';
 }
 const initialState: ScheduleState = {
@@ -29,6 +32,17 @@ const initialState: ScheduleState = {
       },
     ],
   },
+  routine: {
+    // ['MON']: [
+    //   {
+    //     date: '',
+    //     startAt: 1,
+    //     endAt: 1.5,
+    //     title: '(SAMPLE)',
+    //     background: '#FECA00',
+    //   },
+    // ],
+  },
 
   status: 'idle',
 };
@@ -37,18 +51,38 @@ export const scheduleSlice = createSlice({
   name: 'schedule',
   initialState,
   reducers: {
+    addRoutine: (
+      state,
+      action: PayloadAction<{ day: string; data: Schedule }>
+    ) => {
+      //
+      const { day, data } = action.payload;
+      if (state.schedule?.[day]) {
+        state.schedule[day] = state.schedule[day].concat(data);
+      } else {
+        state.schedule[day] = [data];
+      }
+    },
+    deleteRoutine: (
+      state,
+      action: PayloadAction<{ day: string; index: number }>
+    ) => {
+      //
+      const { day, index } = action.payload;
+      state.schedule[day] = state.schedule[day].filter((el, i) => {
+        return i !== index;
+      });
+    },
     addSchedule: (
       state,
-      action: PayloadAction<{ date: string; data: any }>
+      action: PayloadAction<{ date: string; data: Schedule }>
     ) => {
-      console.log(action.payload.date, action.payload.data);
-      console.log(state.schedule[action.payload.date]);
-      if (state.schedule?.[action.payload.date]) {
-        state.schedule[action.payload.date] = state.schedule[
-          action.payload.date
-        ].concat(action.payload.data);
+      const { date, data } = action.payload;
+
+      if (state.schedule?.[date]) {
+        state.schedule[date] = state.schedule[date].concat(data);
       } else {
-        state.schedule[action.payload.date] = [action.payload.data];
+        state.schedule[date] = [data];
       }
     },
     updateSchedule: (
@@ -77,7 +111,7 @@ export const scheduleSlice = createSlice({
   },
 });
 
-export const { addSchedule, updateSchedule, deleteSchedule } =
+export const { addRoutine, addSchedule, updateSchedule, deleteSchedule } =
   scheduleSlice.actions;
 
 export const getSchedule = (state: RootState) => state.schedule;

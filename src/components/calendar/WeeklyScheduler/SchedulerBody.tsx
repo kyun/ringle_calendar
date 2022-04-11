@@ -1,7 +1,8 @@
-import { Dayjs } from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import React from 'react';
 import { useAppSelector } from '../../../app/hooks';
 import {
+  DAY_NAME_EN,
   HALF_HOUR_HEIGHT,
   HEADER_HEIGHT,
   HOUR_HEIGHT,
@@ -47,7 +48,7 @@ const INIT_DRAFT = {
   background: '#FECA00',
 };
 const SchedulerBody: React.FC<Props> = ({ days, now }) => {
-  const { schedule } = useAppSelector(getSchedule);
+  const { schedule, routine } = useAppSelector(getSchedule);
   const bodyRef = React.useRef<HTMLDivElement>(null);
   const resizableDivRefs = React.useRef<HTMLDivElement[]>([]);
   const [isInputModalOpen, setIsInputModalOpen] = React.useState(false);
@@ -91,6 +92,7 @@ const SchedulerBody: React.FC<Props> = ({ days, now }) => {
     };
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!pos.isActive) return;
+    disableMouseEvent(e);
     if (!bodyRef.current) return;
     const { index } = pos;
     const clientY =
@@ -100,16 +102,22 @@ const SchedulerBody: React.FC<Props> = ({ days, now }) => {
         HOUR_HEIGHT +
       0.5;
     const { top, height } = generateStyle(pos.startAt, pos.endAt);
+
     resizableDivRefs.current[index].style.top = `${top}px`;
     resizableDivRefs.current[index].style.height = `${height}px`;
   };
   const handleMouseUp = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!pos.isActive) return;
+    disableMouseEvent(e);
+
     if (!bodyRef.current) return;
     const { index, startAt, endAt } = pos;
     document.body.style.cursor = 'unset';
-    resizableDivRefs.current[index].style.top = `${0}px`;
-    resizableDivRefs.current[index].style.height = `${0}px`;
+    if (resizableDivRefs.current[index]) {
+      resizableDivRefs.current[index].style.top = `${0}px`;
+      resizableDivRefs.current[index].style.height = `${0}px`;
+    }
+
     setDraft((prev) => ({
       ...prev,
       startAt,
@@ -140,8 +148,9 @@ const SchedulerBody: React.FC<Props> = ({ days, now }) => {
   };
 
   const handleScheduleClick = (el: Schedule, index: number) => {
+    let _date = el.date === '' ? now.format('YYYY-MM-DD') : el.date;
     setIsInputModalOpen(true);
-    setDraft(el);
+    setDraft({ ...el, date: _date });
     setSelectedScheduleInfo({
       index,
       date: el.date,
@@ -208,6 +217,31 @@ const SchedulerBody: React.FC<Props> = ({ days, now }) => {
             ))}
             {/* Saved Schedule */}
             {schedule?.[day.format('YYYY-MM-DD')]?.map((el, index) => {
+              return (
+                <div
+                  className={`saved-schedule ${
+                    selectedScheduleInfo.index === index &&
+                    selectedScheduleInfo.date === day.format('YYYY-MM-DD')
+                      ? '--hidden'
+                      : ''
+                  }`}
+                  style={generateStyle(el.startAt, el.endAt)}
+                  key={index}
+                  onMouseDown={disableMouseEvent}
+                  // onMouseMove={disableMouseEvent}
+                  // onMouseUp={disableMouseEvent}
+                  onClick={() => handleScheduleClick(el, index)}
+                >
+                  <span className="title">{el.title}</span>
+                  <span className="period">
+                    {TIME_NAME[el.startAt * 2]} - {TIME_NAME[el.endAt * 2]}
+                  </span>
+                </div>
+              );
+            })}
+
+            {/* Saved Routine */}
+            {routine?.[DAY_NAME_EN[index]]?.map((el, index) => {
               return (
                 <div
                   className={`saved-schedule ${

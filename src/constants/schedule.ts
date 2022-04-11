@@ -4,6 +4,7 @@ export const HEADER_HEIGHT = 64;
 export const SCHEDULER_HEIGHT = 100;
 
 export const DAY_NAME = ['일', '월', '화', '수', '목', '금', '토'];
+export const DAY_NAME_EN = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
 
 export const TIME_NAME = [
   '오전 12:00',

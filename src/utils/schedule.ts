@@ -11,12 +11,12 @@ const generateStyle = (startAt: number, endAt: number) => {
   if (startAt >= endAt) {
     return {
       top: top + height,
-      height: Math.max(Math.abs(height), 24),
+      height: Math.max(Math.abs(height), 24) - 4,
     };
   }
   return {
     top,
-    height: height,
+    height: height - 4,
   };
 };
 
