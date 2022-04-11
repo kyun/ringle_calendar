@@ -119,12 +119,16 @@ const TodoInputModal: React.FC<Props> = ({
           </IconButton>
         </div>
         <div className="content">
-          <Input defaultValue={draft.title} onChange={handleTitle} />
+          <div className="row">
+            <Input defaultValue={draft.title} onChange={handleTitle} />
+          </div>
           <div className="row">
             <input
               type="date"
               value={draft?.date}
               onChange={handleDateChange}
+              required
+              onKeyDown={(e: any) => e.preventDefault()}
             />
             <InputPeriod
               startAt={draft?.startAt}

@@ -2,6 +2,7 @@ import React from 'react';
 import './Input.scss';
 
 interface Props {
+  maxLength?: number;
   placeholder?: string;
   value?: string;
   defaultValue?: string;
@@ -12,9 +13,11 @@ const Input: React.FC<Props> = ({
   value,
   onChange,
   defaultValue,
+  maxLength = 20,
 }) => {
   return (
     <input
+      maxLength={maxLength}
       defaultValue={defaultValue}
       className="Input"
       type="text"

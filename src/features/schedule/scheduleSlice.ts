@@ -18,7 +18,6 @@ export interface ScheduleState {
   routine: {
     [day: string]: Schedule[];
   };
-  status: 'idle' | 'loading' | 'failed';
 }
 const initialState: ScheduleState = {
   schedule: {
@@ -43,8 +42,6 @@ const initialState: ScheduleState = {
     //   },
     // ],
   },
-
-  status: 'idle',
 };
 
 export const scheduleSlice = createSlice({

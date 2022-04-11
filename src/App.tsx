@@ -1,14 +1,13 @@
 import React from 'react';
-import logo from './logo.svg';
-import { Counter } from './features/counter/Counter';
 import './App.scss';
-import Calendar from './features/calendar/Calendar';
 import Header from './components/common/Header';
 import MiniCalendar from './components/calendar/MiniCalendar';
 import WeeklyScheduler from './components/calendar/WeeklyScheduler/index2';
 import { useAppSelector } from './app/hooks';
 import { selectCalendar } from './features/calendar/calendarSlice';
 import MonthlyScheduler from './components/calendar/MonthlyScheduler';
+import IconButton from './components/common/IconButton';
+import { Md10K, Md360, MdRadar, MdSafetyDivider } from 'react-icons/md';
 
 function App() {
   const calendar = useAppSelector(selectCalendar);
@@ -27,7 +26,20 @@ function App() {
             <MonthlyScheduler />
           )}
         </div>
-        <div className="right-section"></div>
+        <div className="right-section">
+          <IconButton>
+            <Md10K />
+          </IconButton>
+          <IconButton>
+            <Md360 />
+          </IconButton>
+          <IconButton>
+            <MdSafetyDivider />
+          </IconButton>
+          <IconButton>
+            <MdRadar />
+          </IconButton>
+        </div>
       </div>
     </div>
   );

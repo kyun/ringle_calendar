@@ -84,8 +84,8 @@ const SchedulerBody: React.FC<Props> = ({ days, now }) => {
       pos.startAt =
         (Math.trunc(clientY / HALF_HOUR_HEIGHT) * HALF_HOUR_HEIGHT) /
         HOUR_HEIGHT;
-      pos.endAt = pos.startAt + 0.5;
-      document.body.style.cursor = 'crosshair';
+      pos.endAt = pos.startAt + 1;
+      document.body.style.cursor = 'row-resize';
       const { top, height } = generateStyle(pos.startAt, pos.endAt);
       resizableDivRefs.current[index].style.top = `${top}px`;
       resizableDivRefs.current[index].style.height = `${height}px`;

@@ -1,28 +1,18 @@
 import React from 'react';
 import IconButton from '../../common/IconButton';
 import './MiniCalendar.scss';
-import {
-  MdOutlineApps,
-  MdOutlineMenu,
-  MdOutlineChevronLeft,
-  MdOutlineChevronRight,
-  MdSearch,
-  MdOutlineHelpOutline,
-  MdOutlineSettings,
-} from 'react-icons/md';
+import { MdOutlineChevronLeft, MdOutlineChevronRight } from 'react-icons/md';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import {
-  nextMonth,
-  prevMonth,
   selectCalendar,
   selectDate,
 } from '../../../features/calendar/calendarSlice';
 import dayjs, { Dayjs } from 'dayjs';
 import weekOfYear from 'dayjs/plugin/weekOfYear';
+import { DAY_NAME } from '../../../constants/schedule';
 
 dayjs.extend(weekOfYear);
 
-const DAY = ['일', '월', '화', '수', '목', '금', '토'];
 const MiniCalendar: React.FC<any> = () => {
   const calendar = useAppSelector(selectCalendar);
   const dispatch = useAppDispatch();
@@ -30,14 +20,11 @@ const MiniCalendar: React.FC<any> = () => {
   const [selected, setSelected] = React.useState(dayjs(Date.now()));
   const [rows, setRows] = React.useState<Dayjs[][]>([[]]);
   const generate = () => {
-    //
-
     const startDay = selected.startOf('month').startOf('week');
     const endDay = selected.endOf('month').endOf('week');
     const startWeek = startDay.week();
     const endWeek = endDay.week() === 1 ? 53 : endDay.week();
     const calendar: Dayjs[][] = [];
-
     const bonusWeek = Array(7)
       .fill(0)
       .map((_, idx) => {
@@ -59,14 +46,6 @@ const MiniCalendar: React.FC<any> = () => {
     setRows(calendar);
   };
 
-  React.useEffect(() => {
-    generate();
-  }, [selected]);
-
-  React.useEffect(() => {
-    setSelected(dayjs(calendar.selected));
-  }, [calendar.selected]);
-
   const handlePrevious = () => {
     setSelected((prev) => {
       return prev.subtract(1, 'month');
@@ -81,6 +60,14 @@ const MiniCalendar: React.FC<any> = () => {
     setSelected(d);
     dispatch(selectDate(d.unix() * 1000));
   };
+
+  React.useEffect(() => {
+    generate();
+  }, [selected]);
+
+  React.useEffect(() => {
+    setSelected(dayjs(calendar.selected));
+  }, [calendar.selected]);
 
   return (
     <div className="MiniCalendar">
@@ -97,7 +84,7 @@ const MiniCalendar: React.FC<any> = () => {
       </div>
       <div className="body">
         <div className="row">
-          {DAY.map((d, i) => {
+          {DAY_NAME.map((d, i) => {
             return (
               <span key={i} className="item">
                 {d}
@@ -109,6 +96,12 @@ const MiniCalendar: React.FC<any> = () => {
           return (
             <div className="row" key={i}>
               {row.map((d, j) => {
+                const isToday =
+                  d.format('YYYYMMDD') === today.format('YYYYMMDD');
+                const isThisMonth = selected.month() === d.month();
+                const isSelected =
+                  d.format('YYYYMMDD') ===
+                  dayjs(calendar.selected).format('YYYYMMDD');
                 return (
                   <span
                     key={j}
@@ -116,15 +109,9 @@ const MiniCalendar: React.FC<any> = () => {
                     onClick={() => handleDate(d)}
                   >
                     <span
-                      className={`box ${
-                        selected.month() === d.month() && '--black'
-                      } ${
-                        d.format('YYYYMMDD') === today.format('YYYYMMDD') &&
-                        '--today'
-                      } ${
-                        d.format('YYYYMMDD') === selected.format('YYYYMMDD') &&
-                        '--selected'
-                      }`}
+                      className={`box ${isThisMonth ? '--black' : ''} ${
+                        isToday ? '--today' : ''
+                      } ${isSelected ? '--selected' : ''}`}
                     >
                       {d.date()}
                     </span>

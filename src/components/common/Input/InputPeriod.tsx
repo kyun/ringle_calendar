@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React from 'react';
 import { TIME_NAME } from '../../../constants/schedule';
 import './InputPeriod.scss';

@@ -3,7 +3,10 @@
   display: flex;
   gap: 4px;
   padding: 8px;
-  // background: red;
   border-radius: 4px;
   background: #f0f0f0;
+  select{
+    border: none;
+    background: transparent;
+  }
 }
