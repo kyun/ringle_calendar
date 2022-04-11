@@ -16,12 +16,14 @@ dayjs.extend(weekOfYear);
 const MiniCalendar: React.FC<any> = () => {
   const calendar = useAppSelector(getCalendar);
   const dispatch = useAppDispatch();
-  const today = React.useMemo(() => dayjs(Date.now()), []);
-  const [selected, setSelected] = React.useState(dayjs(Date.now()));
+  const now = React.useMemo(() => dayjs(Date.now()), []);
+  // Redux state currentMills 와 함께 local state를 쓰는 이유
+  // MiniCalendar의 탐색은 독립적이어야 해서.
+  const [_currentMills, _setCurrentMills] = React.useState(dayjs(Date.now()));
   const [rows, setRows] = React.useState<Dayjs[][]>([[]]);
-  const generate = () => {
-    const startDay = selected.startOf('month').startOf('week');
-    const endDay = selected.endOf('month').endOf('week');
+  const generateCalendar = () => {
+    const startDay = _currentMills.startOf('month').startOf('week');
+    const endDay = _currentMills.endOf('month').endOf('week');
     const startWeek = startDay.week();
     const endWeek = endDay.week() === 1 ? 53 : endDay.week();
     const _calendar: Dayjs[][] = [];
@@ -47,32 +49,32 @@ const MiniCalendar: React.FC<any> = () => {
   };
 
   const handlePrevious = () => {
-    setSelected((prev) => {
+    _setCurrentMills((prev) => {
       return prev.subtract(1, 'month');
     });
   };
   const handleNext = () => {
-    setSelected((prev) => {
+    _setCurrentMills((prev) => {
       return prev.subtract(1, 'month');
     });
   };
   const handleDate = (d: Dayjs) => {
-    setSelected(d);
+    _setCurrentMills(d);
     dispatch(setCurrentMills(d.unix() * 1000));
   };
 
   React.useEffect(() => {
-    generate();
-  }, [selected]);
+    generateCalendar();
+  }, [_currentMills]);
 
   React.useEffect(() => {
-    setSelected(dayjs(calendar.currentMills));
+    _setCurrentMills(dayjs(calendar.currentMills));
   }, [calendar.currentMills]);
 
   return (
     <div className="MiniCalendar">
       <div className="head">
-        <span className="title">{selected.format('YYYY년 MM월')}</span>
+        <span className="title">{_currentMills.format('YYYY년 MM월')}</span>
         <div className="toolbox">
           <IconButton size={24} onClick={handlePrevious}>
             <MdOutlineChevronLeft />
@@ -84,10 +86,10 @@ const MiniCalendar: React.FC<any> = () => {
       </div>
       <div className="body">
         <div className="row">
-          {DAY_NAME.map((d, i) => {
+          {DAY_NAME.map((name, i) => {
             return (
               <span key={i} className="item">
-                {d}
+                {name}
               </span>
             );
           })}
@@ -96,12 +98,11 @@ const MiniCalendar: React.FC<any> = () => {
           return (
             <div className="row" key={i}>
               {row.map((d, j) => {
-                const isToday =
-                  d.format('YYYYMMDD') === today.format('YYYYMMDD');
-                const isThisMonth = selected.month() === d.month();
+                const formatted = d.format('YYYYMMDD');
+                const isToday = formatted === now.format('YYYYMMDD');
+                const isThisMonth = _currentMills.month() === d.month();
                 const isSelected =
-                  d.format('YYYYMMDD') ===
-                  dayjs(calendar.currentMills).format('YYYYMMDD');
+                  formatted === dayjs(calendar.currentMills).format('YYYYMMDD');
                 return (
                   <span
                     key={j}

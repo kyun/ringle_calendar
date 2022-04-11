@@ -11,7 +11,6 @@ import { Md10K, Md360, MdRadar, MdSafetyDivider } from 'react-icons/md';
 
 function App() {
   const calendar = useAppSelector(getCalendar);
-
   return (
     <div className="App">
       <Header />

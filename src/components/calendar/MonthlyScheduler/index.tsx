@@ -1,6 +1,6 @@
 import dayjs, { Dayjs } from 'dayjs';
 import React from 'react';
-import { useAppDispatch, useAppSelector } from '../../../app/hooks';
+import { useAppSelector } from '../../../app/hooks';
 import { DAY_NAME, TIME_NAME } from '../../../constants/schedule';
 import { getCalendar } from '../../../features/calendar/calendarSlice';
 import { getSchedule } from '../../../features/schedule/scheduleSlice';

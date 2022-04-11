@@ -6,13 +6,11 @@
   padding: 16px;
   box-sizing: border-box;
   user-select: none;
-
   .head {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 4px 0;
-    // background: red;
     .title{
       padding-left: 5px;
       font-family: "Google Sans",Roboto,Arial,sans-serif;
@@ -50,11 +48,9 @@
           width: 24px;
           height: 24px;
           border-radius: 100%;
-  
           &.--black{
             color: black;
           }
-
           &.--selected{
             background-color: #aecbfa;
             color: #185abc;
@@ -65,7 +61,6 @@
             background-color: #1a73e8;
           }
         }
-
       }
     }
   }

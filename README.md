@@ -24,21 +24,25 @@
 - [x] Redux
   - [x] Calendar Redux Setting
   - [x] Schedule Redux Setting
+
 - [x] Header 
   - [x] UI 개발
   - [x] 반응형
   - [x] Refactoring
+
 - [x] Layout
   - [x] UI 개발
   - [x] 반응형
-  - [ ] Refactoring
+  - [x] Refactoring
+
 - [x] MiniCalendar
   - [x] UI 개발
   - [x] Calendar Generate
   - [x] Move Date
   - [x] Calendar Redux 연동
   - [x] ~~반응형 (해당사항 없음)~~
-  - [ ] Refactoring
+  - [x] Refactoring
+
 - [ ] Weekly Scheduler
   - [x] UI 개발
   - [x] 반응형
@@ -54,6 +58,7 @@
   - [x] 기간이 겹치는 일정 UI 처리 (깊은 고민이 필요)
   - [ ] Delete 키로 일정 삭제
   - [ ] Refactoring
+
 - [ ] Monthly Scheduler
   - [ ] UI 개발
   - [ ] 반응형
@@ -68,6 +73,7 @@
   - [ ] 등록된 일정 클릭시 일정 수정 모달 띄우기
   - [ ] 마우스 스크롤로 달력 이동
   - [ ] Refactoring
+
 - [ ] InputScheduleModal
   - [x] UI 개발
   - [ ] 반응형
@@ -79,7 +85,16 @@
   - [x] Calendar Redux 연동
   - [x] Schedule Redux 연동
   - [ ] Refactoring
-- [ ] Reusable Components (비지니스 로직이 없음)
+
+- [ ] ScheduleListModal
+  - [ ] UI 개발
+  - [ ] 반응형
+  - [ ] Calendar Redux 연동
+  - [ ] Schedule Redux 연동
+  - [ ] ESC로 닫기
+  - [ ] Refactoring
+
+- [ ] Reusable Components (비지니스 로직이 없어야 함)
   - [x] SimpleButton
   - [x] IconButton
   - [x] SwitchButton
@@ -97,3 +112,6 @@
 
 > 처음에 과제 받았을 때 너무 재밌겠다~ 라고 생각하고 지금도 재밌게 개발하고 있긴한데, 문뜩 난이도가 좀 많이 높은거 아닌가 라는 생각이 듬. 
 > 필수 구현범위는 명확하나, 구현하지 않아도 되는 것들이 다소 모호해서 일단은 구글 캘린더의 주요 기능들은 전부 클론하고 있는데, 과제치고는 코드 규모가 꽤 방대해졌다.
+
+
+> 어려울 것이라고 생각했던 중첩 스케줄 표시를 생각보다 쉽게 해결했다. 비록 구글 캘린더와 동일하게 구현하진 못했지만, 나름의 알고리즘을 가지고 중첩된 스케쥴을 잘 표시했다.
