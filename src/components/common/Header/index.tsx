@@ -99,7 +99,10 @@ const Header: React.FC<any> = () => {
             <MdOutlineChevronRight />
           </IconButton>
           <span className="title">
-            {dayjs(calendar.currentMills).format('YYYY년 MM월')}
+            {dayjs(calendar.currentMills).format('YYYY년 M월')}
+            {dayjs(calendar.currentMills).startOf('week').month() !==
+              dayjs(calendar.currentMills).endOf('week').month() &&
+              ` - ${dayjs(calendar.currentMills).endOf('week').month() + 1}월`}
           </span>
         </div>
         <div className="toolbox">
