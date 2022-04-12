@@ -92,7 +92,7 @@
   - [x] Calendar Redux 연동
   - [x] Schedule Redux 연동
   - [x] 등록된 반복 일정 표시
-  - [ ] ESC로 닫기
+  - [x] ESC로 닫기
   - [ ] Refactoring
 
 - [ ] Reusable Components (비지니스 로직이 없어야 함)

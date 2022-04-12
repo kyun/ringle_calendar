@@ -39,12 +39,8 @@ const MonthlyScheduler: React.FC<any> = () => {
   }, [defaultBackground]);
   const [draft, setDraft] = React.useState(initDraft);
   const [isInputModalOpen, setIsInputModalOpen] = React.useState(false);
-  const [isScheduleListModalOpen, setIsScheduleListModalOpen] =
-    React.useState(false);
-  const [selectedDateInfo, setSelectedDateInfo] = React.useState({
-    date: '',
-    dayname: '',
-  });
+  React.useState(false);
+
   const [clickedDate, setClickedDate] = React.useState('');
 
   const today = React.useMemo(() => dayjs(Date.now()), []);
@@ -91,9 +87,7 @@ const MonthlyScheduler: React.FC<any> = () => {
     setDraft(initDraft);
     setIsInputModalOpen(false);
   };
-  const handleCloseListModal = () => {
-    setIsScheduleListModalOpen(false);
-  };
+
   const handleClickDate = (date: string) => (e: any) => {
     e.preventDefault();
     e.stopPropagation();
@@ -118,17 +112,28 @@ const MonthlyScheduler: React.FC<any> = () => {
       e.preventDefault();
       e.stopPropagation();
       setClickedDate(date);
-      setSelectedDateInfo({
-        date,
-        dayname,
-      });
-      setIsScheduleListModalOpen(true);
     };
   const handleFloatingClose = (e: any) => {
     e.preventDefault();
     e.stopPropagation();
     setClickedDate('');
   };
+
+  React.useEffect(() => {
+    if (clickedDate === '') return;
+    const handleESC = (e: any) => {
+      console.log(e.key);
+      if (e.key === 'Escape') {
+        setClickedDate('');
+      }
+    };
+    window.addEventListener('keydown', handleESC);
+
+    return () => {
+      window.removeEventListener('keydown', handleESC);
+    };
+  }, [clickedDate]);
+
   return (
     <div className="MonthlyScheduler">
       {isInputModalOpen && (
@@ -140,15 +145,6 @@ const MonthlyScheduler: React.FC<any> = () => {
           />
         </Portal>
       )}
-      {/* {isScheduleListModalOpen && (
-        <Portal>
-          <ScheduleListModal
-            onClose={handleCloseListModal}
-            selectedDateInfo={selectedDateInfo}
-            list={schedule[clickedDate]}
-          />
-        </Portal>
-      )} */}
       <div className="row --fixed">
         {DAY_NAME.map((day, i) => {
           return (
