@@ -5,7 +5,7 @@ interface Props {
   color?: string;
   size?: number;
   style?: React.CSSProperties;
-  onClick?: () => void;
+  onClick?: (e: any) => void;
 }
 const IconButton: React.FC<Props> = ({
   children,

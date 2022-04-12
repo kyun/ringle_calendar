@@ -1,5 +1,6 @@
 import dayjs, { Dayjs } from 'dayjs';
 import React from 'react';
+import { MdClose } from 'react-icons/md';
 import { useAppSelector } from '../../../app/hooks';
 import {
   COLORS,
@@ -12,6 +13,7 @@ import {
   getSchedule,
   Schedule,
 } from '../../../features/schedule/scheduleSlice';
+import IconButton from '../../common/IconButton';
 import Portal from '../../common/Portal';
 import TodoInputModal from '../../modals/TodoInputModal';
 import './MonthlyScheduler.scss';
@@ -30,6 +32,7 @@ const INIT_DRAFT: Schedule = {
 const MonthlyScheduler: React.FC<any> = () => {
   const calendar = useAppSelector(getCalendar);
   const { schedule, routine, defaultBackground } = useAppSelector(getSchedule);
+  const floatRef = React.useRef<HTMLDivElement>(null);
   const initDraft = React.useMemo(() => {
     return {
       ...INIT_DRAFT,
@@ -123,6 +126,11 @@ const MonthlyScheduler: React.FC<any> = () => {
       });
       setIsScheduleListModalOpen(true);
     };
+  const handleFloatingClose = (e: any) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setClickedDate('');
+  };
   return (
     <div className="MonthlyScheduler">
       {isInputModalOpen && (
@@ -134,7 +142,7 @@ const MonthlyScheduler: React.FC<any> = () => {
           />
         </Portal>
       )}
-      {isScheduleListModalOpen && (
+      {/* {isScheduleListModalOpen && (
         <Portal>
           <ScheduleListModal
             onClose={handleCloseListModal}
@@ -142,7 +150,7 @@ const MonthlyScheduler: React.FC<any> = () => {
             list={schedule[clickedDate]}
           />
         </Portal>
-      )}
+      )} */}
       <div className="row --fixed">
         {DAY_NAME.map((day, i) => {
           return (
@@ -163,21 +171,42 @@ const MonthlyScheduler: React.FC<any> = () => {
                 ...data,
                 date: d.format('YYYY-MM-DD'),
               }));
-              const length = clone.length;
               const sorted =
                 [...clone, ..._routine]?.sort(
                   (a, b) => a.startAt - b.startAt
                 ) ?? [];
+              const length = sorted.length;
+              const floated = clickedDate === d.format('YYYY-MM-DD');
               return (
                 <div
                   className={`box ${isToday ? '--today' : ''} ${
                     isPresent ? '--black' : ''
                   }`}
-                  onClick={handleClickDate(d.format('YYYY-MM-DD'))}
+                  onClick={(e) => {
+                    !floated && handleClickDate(d.format('YYYY-MM-DD'))(e);
+                  }}
                   key={j}
                 >
                   {d.date()}
-                  <div className="schedule-list">
+                  <div className={`schedule-list ${floated && '--floated'}`}>
+                    {floated && (
+                      <div className="head">
+                        <Portal>
+                          <div
+                            className="Overlay"
+                            style={{ zIndex: 30 }}
+                            onClick={handleFloatingClose}
+                          />
+                        </Portal>
+                        <span style={{ width: 28 }} />
+                        <span className="date">
+                          {d.date()} ({DAY_NAME[d.day()]})
+                        </span>
+                        <IconButton onClick={handleFloatingClose} size={28}>
+                          <MdClose />
+                        </IconButton>
+                      </div>
+                    )}
                     {/* Draft */}
                     {draft &&
                       draft.date === d.format('YYYY-MM-DD') &&
@@ -192,24 +221,26 @@ const MonthlyScheduler: React.FC<any> = () => {
                           </span>
                         </div>
                       )}
-                    {sorted?.slice(0, 3)?.map((el, index) => {
-                      return (
-                        <div
-                          className="schedule-item"
-                          key={index}
-                          onClick={handleItemClick(el)}
-                        >
-                          <span
-                            className="bullet"
-                            style={{ background: el.background }}
-                          />
-                          <span className="text">
-                            {TIME_NAME[el.startAt * 2]} - {el.title}
-                          </span>
-                        </div>
-                      );
-                    })}
-                    {schedule?.[d.format('YYYY-MM-DD')]?.length > 3 && (
+                    {(floated ? sorted : sorted?.slice(0, 3))?.map(
+                      (el, index) => {
+                        return (
+                          <div
+                            className="schedule-item"
+                            key={index}
+                            onClick={handleItemClick(el)}
+                          >
+                            <span
+                              className="bullet"
+                              style={{ background: el.background }}
+                            />
+                            <span className="text">
+                              {TIME_NAME[el.startAt * 2]} - {el.title}
+                            </span>
+                          </div>
+                        );
+                      }
+                    )}
+                    {length > 3 && !floated && (
                       <button
                         className="more-button"
                         onClick={handleClickMore({

@@ -86,12 +86,12 @@
   - [x] Schedule Redux 연동
   - [ ] Refactoring
 
-- [ ] ScheduleListModal
-  - [ ] UI 개발
+- [ ] ~~ScheduleListModal~~ -> Floating 처리
+  - [x] UI 개발
   - [ ] 반응형
-  - [ ] Calendar Redux 연동
-  - [ ] Schedule Redux 연동
-  - [ ] 등록된 반복 일정 표시
+  - [x] Calendar Redux 연동
+  - [x] Schedule Redux 연동
+  - [x] 등록된 반복 일정 표시
   - [ ] ESC로 닫기
   - [ ] Refactoring
 
@@ -103,6 +103,9 @@
   - [x] Input
   - [ ] InputPeriod
   - [x] ColorBox
+
+- [ ] Algorithm 
+  - [ ] 중첩 스케줄 처리
 #### 버그
 - [ ] [Component] Weekly Scheduler 기간 드래그시 좌측 미니캘린더쪽으로 이동 시 일정 박스 사라지지 않음
 

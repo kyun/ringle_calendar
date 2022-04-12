@@ -19,11 +19,12 @@
 
     }
     .box{
+      position: relative;
       flex: 1 1 0%;
       border-right: 1px solid #eee;
       color: #70757a;
       cursor: pointer;
-      overflow: hidden;
+      // overflow: hidden;
       &.--black {
         color: black;
       }
@@ -37,11 +38,36 @@
       //   background: #eee;
       // }
       .schedule-list{
+        overflow: hidden;
         padding-top: 4px;
         display: flex;
         flex-direction: column;
         width: 100%;
         gap: 4px;
+        &.--floated {
+          z-index: 33;
+          position: absolute;
+          top: -16px;
+          left: -16px;
+          right: 0;
+          margin: auto;
+          padding: 16px;
+          background: white;
+          box-shadow: 0px 3px 6px rgba(0,0,0,0.4);
+          border-radius: 6px;
+          max-height: 400px;
+          overflow-y: auto;
+          .head{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            .date {
+              font-size: 16px;
+              font-weight: bold;
+            }
+          }
+        }
         .schedule-item{
           font-weight: 500;
           color: black;
