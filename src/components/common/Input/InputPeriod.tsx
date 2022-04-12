@@ -4,10 +4,10 @@ import { TIME_NAME } from '../../../constants/schedule';
 import './InputPeriod.scss';
 
 interface Props {
-  startAt?: number;
-  endAt?: number;
-  onStartAtChange?: (v: string) => void;
-  onEndAtChange?: (v: string) => void;
+  startAt: number;
+  endAt: number;
+  onStartAtChange: (v: string) => void;
+  onEndAtChange: (v: string) => void;
 }
 
 const InputPeriod: React.FC<Props> = ({

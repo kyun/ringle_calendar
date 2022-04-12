@@ -57,3 +57,19 @@ export const TIME_NAME = [
   '오후 11:30',
   '오전 12:00',
 ];
+export const HOUR_NAME = Array(24)
+  .fill(0)
+  .map((_, index) => {
+    const i = index + 1;
+    if (i === 24) {
+      return '';
+    }
+    if (i > 11) {
+      if (i === 12) {
+        return `오후 ${i}시`;
+      }
+      return `오후 ${i - 12}시`;
+    } else {
+      return `오전 ${i}시`;
+    }
+  });

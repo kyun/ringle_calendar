@@ -14,6 +14,7 @@ import {
 } from './features/schedule/scheduleSlice';
 import ColorBox from './components/common/ColorBox';
 import { COLORS } from './constants/schedule';
+import dayjs from 'dayjs';
 
 function App() {
   const calendar = useAppSelector(getCalendar);
@@ -22,6 +23,12 @@ function App() {
   const handleBackground = (background: string) => {
     dispatch(setDefaultBackground(background));
   };
+
+  React.useEffect(() => {
+    document.title = `Ringle Calendar - ${dayjs(calendar.currentMills).format(
+      'YYYY년 M월'
+    )}`;
+  }, [calendar.currentMills]);
   return (
     <div className="App">
       <Header />

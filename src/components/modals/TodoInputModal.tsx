@@ -28,10 +28,7 @@ interface Props {
 
 const TodoInputModal: React.FC<Props> = ({ onClose, draft, setDraft }) => {
   const dispatch = useAppDispatch();
-
-  const isAddMode = React.useMemo(() => {
-    return draft.id === '';
-  }, [draft]);
+  const isAddMode = React.useMemo(() => draft.id === '', [draft]);
   const originDraft = React.useMemo(() => draft, []);
   const originDay = React.useMemo(
     () => DAY_NAME_EN[dayjs(draft.date).day()],
@@ -43,7 +40,7 @@ const TodoInputModal: React.FC<Props> = ({ onClose, draft, setDraft }) => {
   );
   const background = React.useMemo(() => draft.background, [draft]);
   const handleTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setDraft?.((prev: any) => ({
+    setDraft((prev: any) => ({
       ...prev,
       title: e.target.value.length === 0 ? '(제목 없음)' : e.target.value,
     }));
@@ -85,52 +82,50 @@ const TodoInputModal: React.FC<Props> = ({ onClose, draft, setDraft }) => {
   };
 
   const handleStartAt = (v: string) => {
-    setDraft?.((prev: any) => ({
+    setDraft((prev: any) => ({
       ...prev,
       startAt: Number(v),
       endAt: Number(v) >= draft!.endAt ? Number(v) + 0.5 : prev.endAt,
     }));
   };
   const handleEndAt = (v: string) => {
-    setDraft?.((prev: any) => ({
+    setDraft((prev: any) => ({
       ...prev,
       endAt: Number(v),
     }));
   };
   const handleDateChange = (e: any) => {
-    console.log(e.target.value);
-    console.log(dayjs(e.target.value).unix() * 1000);
     const targetMills = dayjs(e.target.value).unix() * 1000;
     dispatch(setCurrentMills(targetMills));
-    setDraft?.((prev: any) => ({
+    setDraft((prev: any) => ({
       ...prev,
       date: e.target.value,
     }));
   };
 
   React.useEffect(() => {
-    console.log(draft);
     const handleESC = (e: any) => {
-      console.log(e.key);
       if (e.key === 'Escape') {
         onClose?.();
       }
+      if (e.key === 'Backspace' && !isAddMode) {
+        handleDelete();
+      }
     };
     window.addEventListener('keydown', handleESC);
-
     return () => {
       window.removeEventListener('keydown', handleESC);
     };
-  }, []);
+  }, [isAddMode]);
 
   const handleRoutine = (e: any) => {
-    setDraft?.((prev: any) => ({
+    setDraft((prev: any) => ({
       ...prev,
       type: e.target.value,
     }));
   };
   const handleColor = (color: string) => {
-    setDraft?.((prev: any) => ({
+    setDraft((prev: any) => ({
       ...prev,
       background: color,
     }));
@@ -186,6 +181,8 @@ const TodoInputModal: React.FC<Props> = ({ onClose, draft, setDraft }) => {
           <div className="row">
             <p style={{ fontSize: 12, color: '#4b4b4b' }}>
               ESC로도 닫을 수 있습니다.
+              <br />
+              Backspace로 일정을 삭제할 수 있습니다.
             </p>
           </div>
         </div>

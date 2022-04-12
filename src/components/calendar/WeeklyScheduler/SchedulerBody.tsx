@@ -1,12 +1,12 @@
-import dayjs, { Dayjs } from 'dayjs';
+import { Dayjs } from 'dayjs';
 import React from 'react';
 import { useAppSelector } from '../../../app/hooks';
 import {
-  COLORS,
   DAY_NAME_EN,
   HALF_HOUR_HEIGHT,
   HEADER_HEIGHT,
   HOUR_HEIGHT,
+  HOUR_NAME,
   SCHEDULER_HEIGHT,
   TIME_NAME,
 } from '../../../constants/schedule';
@@ -14,59 +14,25 @@ import {
   getSchedule,
   Schedule,
 } from '../../../features/schedule/scheduleSlice';
+import useDraft from '../../../hooks/useDraft';
 import { hexToRgba } from '../../../utils/color';
-import { deduplicator, generateStyle } from '../../../utils/schedule';
+import { generateStyle, style4duplicate } from '../../../utils/schedule';
 import Portal from '../../common/Portal';
 import TodoInputModal from '../../modals/TodoInputModal';
+import HourBoxWrapper from './HourBoxWrapper';
 import './SchedulerBody.scss';
 
 interface Props {
-  //
   days: Dayjs[];
   now: Dayjs;
 }
-const _HOUR_NAME = Array(24)
-  .fill(0)
-  .map((_, index) => {
-    const i = index + 1;
-    if (i === 24) {
-      return '';
-    }
-    if (i > 11) {
-      if (i === 12) {
-        return `오후 ${i}시`;
-      }
-      return `오후 ${i - 12}시`;
-    } else {
-      return `오전 ${i}시`;
-    }
-  });
 
-const INIT_DRAFT: Schedule = {
-  type: 'schedule',
-  date: '',
-  startAt: 0,
-  endAt: 0,
-  title: '(제목 없음)',
-  background: COLORS[0],
-  id: '',
-};
 const SchedulerBody: React.FC<Props> = ({ days, now }) => {
   const { schedule, routine, defaultBackground } = useAppSelector(getSchedule);
   const bodyRef = React.useRef<HTMLDivElement>(null);
   const resizableDivRefs = React.useRef<HTMLDivElement[]>([]);
-  const initDraft = React.useMemo(() => {
-    return {
-      ...INIT_DRAFT,
-      background: defaultBackground,
-    };
-  }, [defaultBackground]);
   const [isInputModalOpen, setIsInputModalOpen] = React.useState(false);
-  const [selectedScheduleInfo, setSelectedScheduleInfo] = React.useState({
-    targetId: '',
-    date: '',
-  });
-  const [draft, setDraft] = React.useState(initDraft);
+  const { draft, setDraft, initDraft } = useDraft();
 
   const nowBarStyleTop = React.useMemo(() => {
     const diff = now.diff(now.startOf('day'));
@@ -75,7 +41,7 @@ const SchedulerBody: React.FC<Props> = ({ days, now }) => {
   }, [now]);
 
   let pos = {
-    index: -1,
+    index: -1, // 0~6 => 일~월
     isActive: false,
     startAt: 0,
     endAt: 0,
@@ -113,15 +79,13 @@ const SchedulerBody: React.FC<Props> = ({ days, now }) => {
       0.5;
 
     const { top, height } = generateStyle(pos.startAt, pos.endAt);
-
     resizableDivRefs.current[index].style.top = `${top}px`;
     resizableDivRefs.current[index].style.height = `${height}px`;
   };
   const handleMouseUp = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!pos.isActive) return;
-    disableMouseEvent(e);
-
     if (!bodyRef.current) return;
+    disableMouseEvent(e);
     if (pos.startAt > pos.endAt) {
       let temp = pos.startAt;
       pos.startAt = pos.endAt;
@@ -133,7 +97,6 @@ const SchedulerBody: React.FC<Props> = ({ days, now }) => {
       resizableDivRefs.current[index].style.top = `${0}px`;
       resizableDivRefs.current[index].style.height = `${0}px`;
     }
-
     setDraft((prev) => ({
       ...prev,
       startAt,
@@ -151,11 +114,7 @@ const SchedulerBody: React.FC<Props> = ({ days, now }) => {
 
   const handleInputModalClose = () => {
     setIsInputModalOpen(false);
-    setSelectedScheduleInfo({
-      targetId: '',
-      date: '',
-    });
-    setDraft(initDraft);
+    initDraft();
   };
 
   const disableMouseEvent = (e: React.MouseEvent<HTMLElement>) => {
@@ -167,10 +126,6 @@ const SchedulerBody: React.FC<Props> = ({ days, now }) => {
     let _date = el.date === '' ? now.format('YYYY-MM-DD') : el.date;
     setIsInputModalOpen(true);
     setDraft({ ...el, date: _date });
-    setSelectedScheduleInfo({
-      targetId: el.id,
-      date: el.date,
-    });
   };
 
   React.useEffect(() => {
@@ -189,7 +144,7 @@ const SchedulerBody: React.FC<Props> = ({ days, now }) => {
         </Portal>
       )}
       <div className="time-indicator-column">
-        {_HOUR_NAME.map((name, index) => (
+        {HOUR_NAME.map((name, index) => (
           <div key={index} className="hour-box">
             <span className="name">{name}</span>
           </div>
@@ -197,7 +152,6 @@ const SchedulerBody: React.FC<Props> = ({ days, now }) => {
       </div>
       {days.map((day, index) => {
         const clone = day.clone();
-        console.log(now.hour());
         const isPast = clone.add(24, 'hour').unix() < now.unix();
         const isToday = day.format('YYYYMMDD') === now.format('YYYYMMDD');
         const _routine = (routine[DAY_NAME_EN[index]] ?? []).map((data) => ({
@@ -208,10 +162,10 @@ const SchedulerBody: React.FC<Props> = ({ days, now }) => {
           ...(schedule?.[day.format('YYYY-MM-DD')] ?? []),
           ..._routine,
         ].sort((a, b) => a.startAt - b.startAt);
-        const ranged = sortedSchedule?.map((el) => {
+        const mapped = sortedSchedule?.map((el) => {
           return [el.startAt, el.endAt];
         });
-        const position = deduplicator(ranged);
+        const duplicateStyle = style4duplicate(mapped);
         return (
           <div
             className="day-column"
@@ -248,22 +202,20 @@ const SchedulerBody: React.FC<Props> = ({ days, now }) => {
               <span className="now-bar" style={{ top: nowBarStyleTop }} />
             )}
             {/* Hour Box */}
-            {_HOUR_NAME.map((_, index) => (
-              <div key={index} className="hour-box"></div>
-            ))}
+            <HourBoxWrapper />
             {/* Saved Schedule */}
             {sortedSchedule?.map((el, index) => {
               return (
                 <div
                   className={`saved-schedule ${
-                    selectedScheduleInfo.targetId === el.id &&
-                    selectedScheduleInfo.date === day.format('YYYY-MM-DD')
+                    draft.id === el.id &&
+                    draft.date === day.format('YYYY-MM-DD')
                       ? '--hidden'
                       : ''
                   }`}
                   style={{
                     ...generateStyle(el.startAt, el.endAt),
-                    ...position[index],
+                    ...duplicateStyle[index],
                     background: hexToRgba(el.background, isPast ? 0.4 : 1),
                   }}
                   key={index}
@@ -279,31 +231,6 @@ const SchedulerBody: React.FC<Props> = ({ days, now }) => {
                 </div>
               );
             })}
-
-            {/* Saved Routine */}
-            {/* {routine?.[DAY_NAME_EN[index]]?.map((el, index) => {
-              return (
-                <div
-                  className={`saved-schedule ${
-                    selectedScheduleInfo.targetId === el.id &&
-                    selectedScheduleInfo.date === day.format('YYYY-MM-DD')
-                      ? '--hidden'
-                      : ''
-                  }`}
-                  style={generateStyle(el.startAt, el.endAt)}
-                  key={index}
-                  onMouseDown={disableMouseEvent}
-                  onMouseMove={disableMouseEvent}
-                  onMouseUp={disableMouseEvent}
-                  onClick={() => handleScheduleClick(el, el.id)}
-                >
-                  <span className="title">{el.title}</span>
-                  <span className="period">
-                    {TIME_NAME[el.startAt * 2]} - {TIME_NAME[el.endAt * 2]}
-                  </span>
-                </div>
-              );
-            })} */}
           </div>
         );
       })}

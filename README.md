@@ -43,7 +43,7 @@
   - [x] ~~반응형 (해당사항 없음)~~
   - [x] Refactoring
 
-- [ ] Weekly Scheduler
+- [x] Weekly Scheduler
   - [x] UI 개발
   - [x] 반응형
   - [x] Weelky Calendar Generate
@@ -56,10 +56,9 @@
   - [x] 등록된 일정 클릭시 일정 수정 모달 띄우기
   - [x] 등록된 반복 일정 표시
   - [x] 기간이 겹치는 일정 UI 처리 (깊은 고민이 필요)
-  - [ ] Delete 키로 일정 삭제
-  - [ ] Refactoring
+  - [x] Refactoring
 
-- [ ] Monthly Scheduler
+- [x] Monthly Scheduler
   - [x] UI 개발
   - [ ] 반응형
   - [x] Monthly Calendar Generate
@@ -72,36 +71,37 @@
   - [x] 등록된 반복 일정 표시
   - [x] 등록된 일정 클릭시 일정 수정 모달 띄우기
   - [ ] 마우스 스크롤로 달력 이동
-  - [ ] Refactoring
+  - [x] Refactoring
 
-- [ ] InputScheduleModal
+- [x] InputScheduleModal
   - [x] UI 개발
-  - [ ] 반응형
+  - [ ] ~~반응형~~
   - [x] 제목 입력
   - [x] 날짜 입력
   - [x] 기간 입력
   - [x] 반복 여부 입력
   - [x] ESC로 닫기
+  - [x] Delete 키로 일정 삭제
   - [x] Calendar Redux 연동
   - [x] Schedule Redux 연동
-  - [ ] Refactoring
+  - [x] Refactoring
 
-- [ ] ~~ScheduleListModal~~ -> Floating 처리
+- [x] ~~ScheduleListModal~~ -> Floating 처리 (MonthlyScheduler에 종속)
   - [x] UI 개발
   - [ ] 반응형
   - [x] Calendar Redux 연동
   - [x] Schedule Redux 연동
   - [x] 등록된 반복 일정 표시
   - [x] ESC로 닫기
-  - [ ] Refactoring
+  - [x] Refactoring
 
-- [ ] Reusable Components (비지니스 로직이 없어야 함)
+- [x] Reusable Components (비지니스 로직이 없어야 함)
   - [x] SimpleButton
   - [x] IconButton
   - [x] SwitchButton
   - [x] Portal
   - [x] Input
-  - [ ] InputPeriod
+  - [ ] InputPeriod 
   - [x] ColorBox
 
 - [x] Algorithm 
