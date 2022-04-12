@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/ringle_calendar/static/css/main.c92cf79d.css",
-    "main.js": "/ringle_calendar/static/js/main.6e3293c9.js",
+    "main.js": "/ringle_calendar/static/js/main.4f74968c.js",
     "static/js/787.88b7491f.chunk.js": "/ringle_calendar/static/js/787.88b7491f.chunk.js",
     "index.html": "/ringle_calendar/index.html",
     "main.c92cf79d.css.map": "/ringle_calendar/static/css/main.c92cf79d.css.map",
-    "main.6e3293c9.js.map": "/ringle_calendar/static/js/main.6e3293c9.js.map",
+    "main.4f74968c.js.map": "/ringle_calendar/static/js/main.4f74968c.js.map",
     "787.88b7491f.chunk.js.map": "/ringle_calendar/static/js/787.88b7491f.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.c92cf79d.css",
-    "static/js/main.6e3293c9.js"
+    "static/js/main.4f74968c.js"
   ]
 }
