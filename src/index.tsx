@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.scss';
@@ -14,7 +15,11 @@ const root = createRoot(container as HTMLElement);
 welcome();
 root.render(
   <Provider store={store}>
-    <BrowserRouter>
+    <BrowserRouter
+      basename={
+        process.env.NODE_ENV === 'production' ? process.env.PUBLIC_URL : ''
+      }
+    >
       <Routes>
         <Route path="/" element={<App />} />
         <Route path="/:viewmode/:date" element={<App />} />
