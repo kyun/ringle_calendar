@@ -17,13 +17,12 @@ import IconButton from '../../common/IconButton';
 import Portal from '../../common/Portal';
 import TodoInputModal from '../../modals/TodoInputModal';
 import './MonthlyScheduler.scss';
-import ScheduleListModal from './ScheduleListModal';
 
 const INIT_DRAFT: Schedule = {
   type: 'schedule',
   date: '',
   startAt: 0,
-  endAt: 1.5,
+  endAt: 1,
   title: '(제목 없음)',
   background: COLORS[0],
   id: '',
@@ -32,7 +31,6 @@ const INIT_DRAFT: Schedule = {
 const MonthlyScheduler: React.FC<any> = () => {
   const calendar = useAppSelector(getCalendar);
   const { schedule, routine, defaultBackground } = useAppSelector(getSchedule);
-  const floatRef = React.useRef<HTMLDivElement>(null);
   const initDraft = React.useMemo(() => {
     return {
       ...INIT_DRAFT,
