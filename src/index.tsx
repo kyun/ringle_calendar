@@ -8,8 +8,10 @@ import { Provider } from 'react-redux';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 import reportWebVitals from './reportWebVitals';
+import welcome from './utils/welcome';
 const container = document.getElementById('root');
 const root = createRoot(container as HTMLElement);
+welcome();
 root.render(
   <Provider store={store}>
     <BrowserRouter>
