@@ -35,12 +35,10 @@ function App() {
     document.title = `Ringle Calendar - ${dayjs(calendar.currentMills).format(
       'YYYY년 M월'
     )}`;
-    console.log(params);
   }, [calendar.currentMills]);
 
   React.useEffect(() => {
     const { viewmode, date } = params;
-    console.log(viewmode, date);
     if (viewmode === 'weekly' || viewmode === 'monthly') {
       dispatch(setViewMode(viewmode));
     }

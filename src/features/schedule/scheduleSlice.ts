@@ -104,7 +104,6 @@ export const scheduleSlice = createSlice({
     ) => {
       //
       const { day, id } = action.payload;
-      console.log(day, id);
       state.routine[day] = state.routine[day]?.filter((el) => {
         return el.id !== id;
       });
