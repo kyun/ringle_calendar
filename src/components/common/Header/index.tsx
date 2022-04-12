@@ -79,7 +79,7 @@ const Header: React.FC<any> = () => {
           <MdOutlineMenu />
         </IconButton>
         <div className="logo-wrapper">
-          <img className="logo" src={'./logo_purple.svg'} />
+          <img className="logo" src={'/logo_purple.svg'} />
           <span className="title">캘린더</span>
         </div>
       </div>

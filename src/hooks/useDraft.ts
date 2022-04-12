@@ -25,7 +25,7 @@ const useDraft = () => {
       ...INIT_DRAFT,
       background: defaultBackground,
     });
-  }, []);
+  }, [defaultBackground]);
 
   React.useEffect(() => {
     setDraft((prev) => ({
@@ -33,7 +33,11 @@ const useDraft = () => {
       background: defaultBackground,
     }));
   }, [defaultBackground]);
-  return { draft, setDraft, initDraft };
+  return {
+    draft,
+    setDraft,
+    initDraft,
+  };
 };
 
 export default useDraft;
