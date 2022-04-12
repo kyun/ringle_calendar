@@ -104,8 +104,8 @@
   - [ ] InputPeriod
   - [x] ColorBox
 
-- [ ] Algorithm 
-  - [ ] 중첩 스케줄 처리
+- [x] Algorithm 
+  - [x] 중첩 스케줄 처리
 #### 버그
 - [ ] [Component] Weekly Scheduler 기간 드래그시 좌측 미니캘린더쪽으로 이동 시 일정 박스 사라지지 않음
 
