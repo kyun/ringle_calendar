@@ -10,12 +10,14 @@ import {
 import dayjs, { Dayjs } from 'dayjs';
 import weekOfYear from 'dayjs/plugin/weekOfYear';
 import { DAY_NAME } from '../../../constants/schedule';
+import { useNavigate } from 'react-router-dom';
 
 dayjs.extend(weekOfYear);
 
 const MiniCalendar: React.FC<any> = () => {
   const calendar = useAppSelector(getCalendar);
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const now = React.useMemo(() => dayjs(Date.now()), []);
   // Redux state currentMills 와 함께 local state를 쓰는 이유
   // MiniCalendar의 탐색은 독립적이어야 해서.
@@ -61,6 +63,7 @@ const MiniCalendar: React.FC<any> = () => {
   const handleDate = (d: Dayjs) => {
     _setCurrentMills(d);
     dispatch(setCurrentMills(d.unix() * 1000));
+    navigate(`/${calendar.viewMode}/${d.format('YYYYMMDD')}`);
   };
 
   React.useEffect(() => {

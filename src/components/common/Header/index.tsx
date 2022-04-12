@@ -24,10 +24,12 @@ import {
   setViewMode,
 } from '../../../features/calendar/calendarSlice';
 import dayjs from 'dayjs';
+import { useNavigate } from 'react-router-dom';
 
 const Header: React.FC<any> = () => {
   const calendar = useAppSelector(getCalendar);
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const handleToday = () => {
     dispatch(selectToday());
@@ -35,19 +37,40 @@ const Header: React.FC<any> = () => {
   const handlePrevious = () => {
     if (calendar.viewMode === 'weekly') {
       dispatch(prevWeek());
+      navigate(
+        `/${calendar.viewMode}/${dayjs(calendar.currentMills)
+          .subtract(1, 'week')
+          .format('YYYYMMDD')}`
+      );
     } else {
       dispatch(prevMonth());
+      navigate(
+        `/${calendar.viewMode}/${dayjs(calendar.currentMills)
+          .subtract(1, 'month')
+          .format('YYYYMMDD')}`
+      );
     }
   };
   const handleNext = () => {
     if (calendar.viewMode === 'weekly') {
       dispatch(nextWeek());
+      navigate(
+        `/${calendar.viewMode}/${dayjs(calendar.currentMills)
+          .add(1, 'week')
+          .format('YYYYMMDD')}`
+      );
     } else {
       dispatch(nextMonth());
+      navigate(
+        `/${calendar.viewMode}/${dayjs(calendar.currentMills)
+          .add(1, 'month')
+          .format('YYYYMMDD')}`
+      );
     }
   };
   const handleSwitchChange = (viewMode: string) => {
     dispatch(setViewMode(viewMode as 'weekly' | 'monthly'));
+    navigate(`/${viewMode}/${dayjs(calendar.currentMills).format('YYYYMMDD')}`);
   };
   return (
     <header>
