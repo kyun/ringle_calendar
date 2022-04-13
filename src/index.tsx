@@ -15,11 +15,7 @@ const root = createRoot(container as HTMLElement);
 welcome();
 root.render(
   <Provider store={store}>
-    <BrowserRouter
-      basename={
-        process.env.NODE_ENV === 'production' ? process.env.PUBLIC_URL : ''
-      }
-    >
+    <BrowserRouter basename={process.env.PUBLIC_URL}>
       <Routes>
         <Route path="/" element={<App />} />
         <Route path="/:viewmode/:date" element={<App />} />
